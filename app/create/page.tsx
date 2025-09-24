@@ -6,7 +6,7 @@ import editSvg from "@/public/edit-pencil.svg";
 import { useEffect, useRef, useState } from "react";
 export default function CreatePage() {
   const [title, setTitle] = useState("New Prompt");
-  const titleRef = useRef<HTMLInputElement | null>(null);
+  // const titleRef = useRef<HTMLInputElement | null>(null);
   const measureTitleRef = useRef<HTMLSpanElement | null>(null);
   const [titleWidth, setTitleWidth] = useState<string>("2ch");
   useEffect(() => {
@@ -14,14 +14,38 @@ export default function CreatePage() {
       setTitleWidth(`${measureTitleRef.current.offsetWidth + 2}px`); // small padding for caret
     }
   }, [title]);
+
+  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "Enter") {
+      e.preventDefault(); // prevent form submission
+      const form = e.currentTarget.form; // the enclosing form element
+      if (!form) return;
+
+      const index = Array.prototype.indexOf.call(
+        form.elements,
+        e.currentTarget,
+      );
+      const next = form.elements[index + 1] as HTMLElement | undefined;
+      if (next) {
+        next.focus(); // move focus to next input/button/etc
+      }
+    }
+  }
+
   return (
     <main className={"h-full w-full flex flex-col gap-4"}>
       <div className={"flex justify-center items-center h-16"}>
         <Header />
       </div>
       <div className={"flex justify-center items-center"}>
-        <div className={"flex flex-col gap-4 items-center"}>
-          <div className={"flex items-center gap-2 w-fit h-fit"}>
+        <form
+          // onSubmit={(e) => e.preventDefault()}
+          className={"flex flex-col gap-4 items-center"}
+        >
+          <label
+            htmlFor="title"
+            className={"flex items-center gap-2 w-fit h-fit"}
+          >
             <div style={{ width: "20px", height: "20px" }} />
             <div className={"relative inline-block"}>
               <span
@@ -31,14 +55,16 @@ export default function CreatePage() {
                 {title || " "}
               </span>
               <input
+                id="title"
                 value={title}
-                ref={titleRef}
+                // ref={titleRef}
                 onChange={(e) => setTitle(e.target.value)}
                 style={{ width: titleWidth }}
                 className="text-xl font-semibold bg-transparent border-none focus:border-b"
-                onKeyPress={(e) =>
-                  e.key === "Enter" && titleRef.current?.blur()
-                }
+                onKeyDown={handleKeyDown}
+                // onKeyPress={(e) =>
+                //   e.key === "Enter" && titleRef.current?.blur()
+                // }
               />
             </div>
             <Image
@@ -46,11 +72,11 @@ export default function CreatePage() {
               alt="Edit icon."
               height={20}
               width={20}
-              onClick={() => titleRef.current?.focus()}
+              // onClick={() => titleRef.current?.focus()}
               className="cursor-pointer"
             />
-          </div>
-          <div className={"bg-gray-800 rounded-xl h-124 w-116 p-4"}>
+          </label>
+          <label className={"bg-gray-800 rounded-xl h-124 w-116 p-4"}>
             <textarea
               className={
                 "h-full w-full border-none outline-none resize-none bg-transparent"
@@ -67,8 +93,8 @@ export default function CreatePage() {
                 "Phasellus et est turpis. Quisque rhoncus tortor ac dui mollis facilisis. Nullam pretium, quam vel rutrum imperdiet, tortor ligula dictum diam, tempus vehicula eros magna vel felis. Ut eget dictum purus. Maecenas ullamcorper sit amet ipsum a mollis. Vivamus ut euismod sem. Nulla eget consectetur dui."
               }
             />
-          </div>
-        </div>
+          </label>
+        </form>
       </div>
     </main>
   );
