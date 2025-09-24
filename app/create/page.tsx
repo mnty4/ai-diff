@@ -8,10 +8,12 @@ export default function CreatePage() {
   const [title, setTitle] = useState("New Prompt");
   // const titleRef = useRef<HTMLInputElement | null>(null);
   const measureTitleRef = useRef<HTMLSpanElement | null>(null);
-  const [titleWidth, setTitleWidth] = useState<string>("2ch");
+
+  // base width for "New Prompt" to avoid initial resizing issues on refresh
+  const [titleWidth, setTitleWidth] = useState<string>("121px");
   useEffect(() => {
     if (measureTitleRef.current) {
-      setTitleWidth(`${measureTitleRef.current.offsetWidth + 2}px`); // small padding for caret
+      setTitleWidth(`${measureTitleRef.current.offsetWidth + 8}px`); // small padding for caret
     }
   }, [title]);
 
@@ -62,6 +64,7 @@ export default function CreatePage() {
                 style={{ width: titleWidth }}
                 className="text-xl font-semibold bg-transparent border-none focus:border-b"
                 onKeyDown={handleKeyDown}
+                maxLength={50}
                 // onKeyPress={(e) =>
                 //   e.key === "Enter" && titleRef.current?.blur()
                 // }
@@ -76,7 +79,7 @@ export default function CreatePage() {
               className="cursor-pointer"
             />
           </label>
-          <label className={"bg-gray-800 rounded-xl h-124 w-116 p-4"}>
+          <div className={"bg-gray-800 rounded-xl h-124 w-116 p-4"}>
             <textarea
               className={
                 "h-full w-full border-none outline-none resize-none bg-transparent"
@@ -93,7 +96,15 @@ export default function CreatePage() {
                 "Phasellus et est turpis. Quisque rhoncus tortor ac dui mollis facilisis. Nullam pretium, quam vel rutrum imperdiet, tortor ligula dictum diam, tempus vehicula eros magna vel felis. Ut eget dictum purus. Maecenas ullamcorper sit amet ipsum a mollis. Vivamus ut euismod sem. Nulla eget consectetur dui."
               }
             />
-          </label>
+          </div>
+          <button
+            className={
+              "bg-white rounded-lg px-4 py-2 text-black flex items-center gap-2 hover:scale-110 transition duration-200 ease-in cursor-pointer"
+            }
+            type="submit"
+          >
+            <span>Generate</span>
+          </button>
         </form>
       </div>
     </main>
