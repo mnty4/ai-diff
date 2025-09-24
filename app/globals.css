@@ -20,7 +20,39 @@
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+    background: var(--background);
+    color: var(--foreground);
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+@keyframes bounceFromRest {
+    0%, 100% {
+        transform: translateY(0);
+        animation-timing-function: cubic-bezier(0,0,0.2,1);
+    }
+    50% {
+        transform: translateY(-25%);
+        animation-timing-function: cubic-bezier(0.8,0,1,1);
+    }
+}
+
+@layer base {
+    /*::-webkit-scrollbar {*/
+    /*    width: 8px;*/
+    /*    height: 8px;*/
+    /*}*/
+    /*::-webkit-scrollbar-track {*/
+    /*    background: #202ba8; !* gray-800 *!*/
+    /*}*/
+
+    /*::-webkit-scrollbar-thumb {*/
+    /*    background: #de1818; !* gray-600 *!*/
+    /*    !*    border-radius: 9999px; !* fully rounded *!*!*/
+    /*}*/
+
+    /*::-webkit-scrollbar-thumb:hover {*/
+    /*    background: #c00cff; !* gray-400 *!*/
+    /*}*/
+
+    /* Works in Firefox, Safari */
 }
