@@ -1,11 +1,6 @@
 "use client";
 
 import Header from "@/app/ui/Header";
-import Image from "next/image";
-import editSvg from "@/public/edit-pencil.svg";
-import { useEffect, useRef, useState } from "react";
-import rightArrow from "@/public/right-arrow.svg";
-import PromptField from "@/app/ui/PromptField";
 import TitleField from "@/app/ui/TitleField";
 import PromptCarousel from "@/app/ui/PromptCarousel";
 
