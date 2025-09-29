@@ -46,10 +46,7 @@ function promptDataReducer(
 export default function CreatePage() {
   const [state, dispatch] = useReducer(promptDataReducer, {
     title: "New Prompt",
-    prompts: [
-      { id: "1", text: "Hello" },
-      { id: "2", text: "World" },
-    ],
+    prompts: [{ id: crypto.randomUUID() }],
   });
   const [selectedPromptIndex, setSelectedPromptIndex] = useState<number>(0);
   // the branch key keeps track of the most recent branch operation (delete all slides after current
@@ -72,9 +69,6 @@ export default function CreatePage() {
       return;
     }
     const responseText = await generate(prompt);
-    // await new Promise((resolve) => {
-    //   setTimeout(() => resolve(null), 5000);
-    // });
     dispatch({
       type: "updatePrompt",
       payload: {
