@@ -7,7 +7,7 @@ export default function PromptField({
   onUpdatePrompt,
 }: {
   prompt: Prompt;
-  onUpdatePrompt: (value: Prompt) => void;
+  onUpdatePrompt?: (value: Prompt) => void;
 }) {
   return (
     <div className={"bg-gray-900 rounded-xl h-124 w-116 p-4"}>
@@ -16,7 +16,7 @@ export default function PromptField({
           "h-full w-full border-none outline-none resize-none bg-transparent"
         }
         onChange={(e) =>
-          onUpdatePrompt({
+          onUpdatePrompt?.({
             id: prompt.id,
             text: e.target.value,
           })

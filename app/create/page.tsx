@@ -5,6 +5,7 @@ import TitleField from "@/app/ui/TitleField";
 import PromptCarousel from "@/app/ui/PromptCarousel";
 import { useReducer, useState } from "react";
 import { PromptData, PromptDataAction } from "@/app/lib/definitions";
+import { generate } from "@/app/lib/actions";
 
 function promptDataReducer(
   state: PromptData,
@@ -66,14 +67,19 @@ export default function CreatePage() {
       payload: dummyPrompt,
     });
     setBranchKey(crypto.randomUUID());
-    await new Promise((resolve) => {
-      setTimeout(() => resolve(null), 5000);
-    });
+    const prompt = state.prompts[selectedPromptIndex].text;
+    if (!prompt) {
+      return;
+    }
+    const responseText = await generate(prompt);
+    // await new Promise((resolve) => {
+    //   setTimeout(() => resolve(null), 5000);
+    // });
     dispatch({
       type: "updatePrompt",
       payload: {
         ...dummyPrompt,
-        text: "New prompt - " + dummyPrompt.id,
+        text: responseText,
         isLoading: false,
       },
     });

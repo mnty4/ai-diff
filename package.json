@@ -10,6 +10,7 @@
     "cypress:open": "cypress open"
   },
   "dependencies": {
+    "@google/genai": "^1.21.0",
     "@headlessui/react": "^2.2.8",
     "clsx": "^2.1.1",
     "embla-carousel": "^8.6.0",

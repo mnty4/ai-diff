@@ -2,7 +2,10 @@ import PromptCarousel from "@/app/ui/PromptCarousel";
 
 describe("prompt-carousel", () => {
   it("render carousel slides", () => {
-    const prompts = ["prompt 1", "prompt 2", "prompt 3"];
+    const prompts = [
+      { id: "1", text: "Hello" },
+      { id: "2", text: "World" },
+    ];
     cy.mount(<PromptCarousel prompts={prompts} />);
     cy.get(".embla__slide").should("have.length", 5);
   });

@@ -16,8 +16,8 @@ export default function PromptCarousel({
   branchKey,
 }: {
   prompts: Prompt[];
-  onUpdatePrompt: (value: Prompt) => void;
-  onSelectSlide: (index: number) => void;
+  onUpdatePrompt?: (value: Prompt) => void;
+  onSelectSlide?: (index: number) => void;
   branchKey?: string;
 }) {
   const [emblaRef, emblaApi] = useEmblaCarousel();
@@ -45,7 +45,7 @@ export default function PromptCarousel({
     if (emblaApi) {
       console.log(emblaApi.selectedScrollSnap());
       const index = emblaApi.selectedScrollSnap();
-      onSelectSlide(index);
+      onSelectSlide?.(index);
     }
   }, [emblaApi, onSelectSlide]);
 
