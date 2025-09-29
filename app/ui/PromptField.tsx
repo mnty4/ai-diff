@@ -1,16 +1,25 @@
 import Image from "next/image";
 import editSvg from "@/public/edit-pencil.svg";
+import { Prompt } from "@/app/lib/definitions";
 
-export default function PromptField({ prompt }: { prompt: string }) {
+export default function PromptField({
+  prompt,
+  onUpdatePrompt,
+}: {
+  prompt: Prompt;
+  onUpdatePrompt: (value: Prompt) => void;
+}) {
   return (
-    // <form
-    //   onSubmit={(e) => e.preventDefault()}
-    // className={"flex flex-col gap-4 items-center"}
-    // >
     <div className={"bg-gray-900 rounded-xl h-124 w-116 p-4"}>
       <textarea
         className={
           "h-full w-full border-none outline-none resize-none bg-transparent"
+        }
+        onChange={(e) =>
+          onUpdatePrompt({
+            id: prompt.id,
+            text: e.target.value,
+          })
         }
         // defaultValue={
         //   "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam a neque id dolor ullamcorper hendrerit. Ut maximus ornare metus, vitae dignissim est. Nam in risus eros. Sed sodales, purus at egestas volutpat, tortor metus maximus velit, ac lobortis odio dui vel orci. Aenean erat arcu, fermentum ac sem at, molestie pharetra dolor. Maecenas fringilla augue in tortor euismod rutrum vitae vitae enim. Sed sed gravida sapien, nec viverra justo. Maecenas nec scelerisque nisl. Ut dui tortor, tincidunt ut accumsan vitae, imperdiet vitae ipsum. Pellentesque dictum lectus metus, ut aliquet ipsum rhoncus malesuada. Pellentesque pretium lectus nec lacus semper ullamcorper.\n" +
@@ -23,9 +32,8 @@ export default function PromptField({ prompt }: { prompt: string }) {
         //   "\n" +
         //   "Phasellus et est turpis. Quisque rhoncus tortor ac dui mollis facilisis. Nullam pretium, quam vel rutrum imperdiet, tortor ligula dictum diam, tempus vehicula eros magna vel felis. Ut eget dictum purus. Maecenas ullamcorper sit amet ipsum a mollis. Vivamus ut euismod sem. Nulla eget consectetur dui."
         // }
-        defaultValue={prompt}
+        value={prompt.text}
       />
     </div>
-    // </form>
   );
 }

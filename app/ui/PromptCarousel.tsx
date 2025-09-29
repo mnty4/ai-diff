@@ -6,8 +6,20 @@ import rightArrow from "@/public/right-arrow.svg";
 import Image from "next/image";
 import clsx from "clsx";
 import { EmblaCarouselType, EmblaEventType } from "embla-carousel";
+import { Prompt } from "@/app/lib/definitions";
+import PromptFieldSkeleton from "@/app/ui/PromptFieldSkeleton";
 
-export default function PromptCarousel({ prompts }: { prompts: string[] }) {
+export default function PromptCarousel({
+  prompts,
+  onUpdatePrompt,
+  onSelectSlide,
+  branchKey,
+}: {
+  prompts: Prompt[];
+  onUpdatePrompt: (value: Prompt) => void;
+  onSelectSlide: (index: number) => void;
+  branchKey?: string;
+}) {
   const [emblaRef, emblaApi] = useEmblaCarousel();
   const [hideLeftButton, setHideLeftButton] = useState(true);
   const [hideRightButton, setHideRightButton] = useState(false);
@@ -29,14 +41,33 @@ export default function PromptCarousel({ prompts }: { prompts: string[] }) {
     },
     [],
   );
+  const handleSelect = useCallback(() => {
+    if (emblaApi) {
+      console.log(emblaApi.selectedScrollSnap());
+      const index = emblaApi.selectedScrollSnap();
+      onSelectSlide(index);
+    }
+  }, [emblaApi, onSelectSlide]);
 
   useEffect(() => {
     if (emblaApi) {
       console.log(emblaApi.scrollProgress());
       console.log(emblaApi.slideNodes()); // Access API
+
       emblaApi.on("slidesInView", handleSlidesInView);
+      emblaApi.on("select", handleSelect);
     }
-  }, [emblaApi, handleSlidesInView]);
+  }, [emblaApi, handleSelect, handleSlidesInView]);
+
+  useEffect(() => {
+    if (!emblaApi) {
+      return;
+    }
+    requestAnimationFrame(() => {
+      console.log("hehexd");
+      emblaApi.scrollTo(prompts.length - 1);
+    });
+  }, [emblaApi, branchKey, prompts.length]);
 
   return (
     <div className="embla relative">
@@ -45,9 +76,13 @@ export default function PromptCarousel({ prompts }: { prompts: string[] }) {
           <div className="embla__slide">
             <div className="w-112"></div>
           </div>
-          {prompts.map((prompt, index) => (
-            <div key={index} className="embla__slide mx-12">
-              <PromptField prompt={prompt} />
+          {prompts.map((prompt) => (
+            <div key={prompt.id} className="embla__slide mx-12">
+              {prompt.isLoading ? (
+                <PromptFieldSkeleton />
+              ) : (
+                <PromptField prompt={prompt} onUpdatePrompt={onUpdatePrompt} />
+              )}
             </div>
           ))}
           <div className="embla__slide">
@@ -56,6 +91,7 @@ export default function PromptCarousel({ prompts }: { prompts: string[] }) {
         </div>
       </div>
       <button
+        type="button"
         className={clsx([
           "embla__prev rounded-full bg-white",
           "absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-72",
@@ -67,6 +103,7 @@ export default function PromptCarousel({ prompts }: { prompts: string[] }) {
         <Image src={leftArrow} alt={"Left arrow."} width={40} height={40} />
       </button>
       <button
+        type="button"
         className={clsx([
           "embla__next rounded-full bg-white",
           "absolute top-1/2 -translate-y-1/2 right-1/2 translate-x-72",
