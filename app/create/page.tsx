@@ -4,37 +4,34 @@ import Header from "@/app/ui/Header";
 import TitleField from "@/app/ui/TitleField";
 import PromptCarousel from "@/app/ui/PromptCarousel";
 import { useReducer, useState } from "react";
-import { PromptData, PromptDataAction } from "@/app/lib/definitions";
+import { Prompt, PromptDataAction } from "@/app/lib/definitions";
 import { generate } from "@/app/lib/actions";
 
-function promptDataReducer(
-  state: PromptData,
-  action: PromptDataAction,
-): PromptData {
+function promptDataReducer(state: Prompt, action: PromptDataAction): Prompt {
   switch (action.type) {
     case "setTitle":
       return { ...state, title: action.payload };
-    case "setPrompts":
-      return { ...state, prompts: action.payload };
-    case "updatePrompt":
+    case "setTweaks":
+      return { ...state, tweaks: action.payload };
+    case "updateTweak":
       return {
         ...state,
-        prompts: state.prompts.map((p) =>
-          p.id === action.payload.id ? action.payload : p,
+        tweaks: state.tweaks.map((t) =>
+          t.id === action.payload.id ? action.payload : t,
         ),
       };
-    case "addPrompt":
-      return { ...state, prompts: [...state.prompts, action.payload] };
-    case "removePrompt":
+    case "addTweak":
+      return { ...state, tweaks: [...state.tweaks, action.payload] };
+    case "removeTweak":
       return {
         ...state,
-        prompts: state.prompts.filter((p) => p.id !== action.id),
+        tweaks: state.tweaks.filter((t) => t.id !== action.id),
       };
     case "branch":
       return {
         ...state,
-        prompts: [
-          ...state.prompts.filter((p, i) => i <= action.index),
+        tweaks: [
+          ...state.tweaks.filter((t, i) => i <= action.index),
           action.payload,
         ],
       };
@@ -46,7 +43,8 @@ function promptDataReducer(
 export default function CreatePage() {
   const [state, dispatch] = useReducer(promptDataReducer, {
     title: "New Prompt",
-    prompts: [{ id: crypto.randomUUID() }],
+    prompt: "",
+    tweaks: [],
   });
   const [selectedPromptIndex, setSelectedPromptIndex] = useState<number>(0);
   // the branch key keeps track of the most recent branch operation (delete all slides after current
@@ -64,13 +62,13 @@ export default function CreatePage() {
       payload: dummyPrompt,
     });
     setBranchKey(crypto.randomUUID());
-    const prompt = state.prompts[selectedPromptIndex].text;
+    const prompt = state.tweaks[selectedPromptIndex].text;
     if (!prompt) {
       return;
     }
     const responseText = await generate(prompt);
     dispatch({
-      type: "updatePrompt",
+      type: "updateTweak",
       payload: {
         ...dummyPrompt,
         text: responseText,
@@ -90,20 +88,21 @@ export default function CreatePage() {
       >
         <TitleField />
         <PromptCarousel
-          prompts={state.prompts}
-          onUpdatePrompt={(value) =>
-            dispatch({ type: "updatePrompt", payload: value })
+          tweaks={state.tweaks}
+          onUpdateTweak={(value) =>
+            dispatch({ type: "updateTweak", payload: value })
           }
           onSelectSlide={(index) => setSelectedPromptIndex(index)}
           branchKey={branchKey}
         />
         <button
+          id="generate-btn"
           className={
             "bg-white rounded-lg px-4 py-2 text-black flex items-center gap-2 hover:scale-110 transition duration-200 ease-in cursor-pointer"
           }
           type="submit"
         >
-          <span>Generate</span>
+          Generate
         </button>
       </form>
     </main>

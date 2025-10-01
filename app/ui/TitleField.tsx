@@ -12,7 +12,10 @@ export default function TitleField() {
   // base width for "New Prompt" to avoid initial resizing issues on refresh
   const [titleWidth, setTitleWidth] = useState<string>("121px");
   useEffect(() => {
-    if (measureTitleRef.current) {
+    if (
+      measureTitleRef.current &&
+      measureTitleRef.current.offsetWidth + 8 >= 121
+    ) {
       setTitleWidth(`${measureTitleRef.current.offsetWidth + 8}px`); // small padding for caret
     }
   }, [title]);

@@ -1,16 +1,17 @@
-export type PromptData = {
-  title: string;
-  prompts: Prompt[];
-};
 export type Prompt = {
+  title: string;
+  prompt: string;
+  tweaks: Tweak[];
+};
+export type Tweak = {
   id: string;
   text?: string;
   isLoading?: boolean;
 };
 export type PromptDataAction =
   | { type: "setTitle"; payload: string }
-  | { type: "setPrompts"; payload: Prompt[] }
-  | { type: "addPrompt"; payload: Prompt }
-  | { type: "updatePrompt"; payload: Prompt }
-  | { type: "removePrompt"; id: string }
-  | { type: "branch"; index: number; payload: Prompt };
+  | { type: "setTweaks"; payload: Tweak[] }
+  | { type: "addTweak"; payload: Tweak }
+  | { type: "updateTweak"; payload: Tweak }
+  | { type: "removeTweak"; id: string }
+  | { type: "branch"; index: number; payload: Tweak };

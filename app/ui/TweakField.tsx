@@ -1,22 +1,22 @@
 import Image from "next/image";
 import editSvg from "@/public/edit-pencil.svg";
-import { Prompt } from "@/app/lib/definitions";
+import { Prompt, Tweak } from "@/app/lib/definitions";
 import HighlightableText, { TextSelection } from "@/app/ui/HighlightableText";
 import { useState } from "react";
 
-export default function PromptField({
-  prompt,
-  onUpdatePrompt,
+export default function TweakField({
+  tweak,
+  onUpdateTweak,
 }: {
-  prompt: string;
-  onUpdatePrompt?: (value: Prompt) => void;
+  tweak: Tweak;
+  onUpdateTweak?: (value: Tweak) => void;
 }) {
   const [selection, setSelection] = useState<TextSelection | null>(null);
 
   return (
     <div className={"bg-gray-900 rounded-xl h-124 w-116 p-4"}>
       <HighlightableText
-        text={prompt || ""}
+        text={tweak.text || ""}
         selection={selection}
         setSelection={setSelection}
       />
@@ -25,12 +25,12 @@ export default function PromptField({
         className={
           "h-full w-full border-none outline-none resize-none bg-transparent"
         }
-        // onChange={(e) =>
-        //   onUpdatePrompt?.({
-        //     id: prompt.id,
-        //     text: e.target.value,
-        //   })
-        // }
+        onChange={(e) =>
+          onUpdateTweak?.({
+            id: tweak.id,
+            text: e.target.value,
+          })
+        }
         // defaultValue={
         //   "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam a neque id dolor ullamcorper hendrerit. Ut maximus ornare metus, vitae dignissim est. Nam in risus eros. Sed sodales, purus at egestas volutpat, tortor metus maximus velit, ac lobortis odio dui vel orci. Aenean erat arcu, fermentum ac sem at, molestie pharetra dolor. Maecenas fringilla augue in tortor euismod rutrum vitae vitae enim. Sed sed gravida sapien, nec viverra justo. Maecenas nec scelerisque nisl. Ut dui tortor, tincidunt ut accumsan vitae, imperdiet vitae ipsum. Pellentesque dictum lectus metus, ut aliquet ipsum rhoncus malesuada. Pellentesque pretium lectus nec lacus semper ullamcorper.\n" +
         //   "\n" +
@@ -42,7 +42,7 @@ export default function PromptField({
         //   "\n" +
         //   "Phasellus et est turpis. Quisque rhoncus tortor ac dui mollis facilisis. Nullam pretium, quam vel rutrum imperdiet, tortor ligula dictum diam, tempus vehicula eros magna vel felis. Ut eget dictum purus. Maecenas ullamcorper sit amet ipsum a mollis. Vivamus ut euismod sem. Nulla eget consectetur dui."
         // }
-        value={prompt}
+        value={tweak.text}
       />
     </div>
   );
