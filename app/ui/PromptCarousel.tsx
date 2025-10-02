@@ -6,7 +6,7 @@ import rightArrow from "@/public/right-arrow.svg";
 import Image from "next/image";
 import clsx from "clsx";
 import { EmblaCarouselType, EmblaEventType } from "embla-carousel";
-import { Prompt, Tweak } from "@/app/lib/definitions";
+import { Prompt, Version } from "@/app/lib/definitions";
 import PromptFieldSkeleton from "@/app/ui/PromptFieldSkeleton";
 import TweakField from "@/app/ui/TweakField";
 
@@ -19,7 +19,7 @@ export default function PromptCarousel({
 }: {
   prompt: Prompt;
   onUpdatePrompt?: (prompt: string) => void;
-  onUpdateTweak?: (value: Tweak) => void;
+  onUpdateTweak?: (value: Version) => void;
   onSelectSlide?: (index: number) => void;
   branchKey?: string;
 }) {
@@ -67,9 +67,9 @@ export default function PromptCarousel({
       return;
     }
     requestAnimationFrame(() => {
-      emblaApi.scrollTo(prompt.tweaks.length);
+      emblaApi.scrollTo(prompt.versions.length);
     });
-  }, [emblaApi, branchKey, prompt.tweaks.length]);
+  }, [emblaApi, branchKey, prompt.versions.length]);
 
   return (
     <div className="embla relative">
@@ -84,12 +84,12 @@ export default function PromptCarousel({
               onUpdatePrompt={onUpdatePrompt}
             />
           </div>
-          {prompt.tweaks.map((tweak) => (
+          {prompt.versions.map((tweak) => (
             <div key={tweak.id} className="embla__slide mx-12">
               {tweak.isLoading ? (
                 <PromptFieldSkeleton />
               ) : (
-                <TweakField tweak={tweak} onUpdateTweak={onUpdateTweak} />
+                <TweakField version={tweak} onUpdateTweak={onUpdateTweak} />
               )}
             </div>
           ))}

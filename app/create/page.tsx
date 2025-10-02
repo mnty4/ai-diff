@@ -6,7 +6,7 @@ export default async function CreatePage() {
     id: crypto.randomUUID(),
     title: "New Prompt",
     prompt: "",
-    tweaks: [],
+    versions: [],
   };
   return (
     <main className={"h-full w-full flex flex-col gap-4"}>

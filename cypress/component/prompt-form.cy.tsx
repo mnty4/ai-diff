@@ -6,7 +6,7 @@ describe("Prompt Form Component", () => {
       id: crypto.randomUUID(),
       title: "New Prompt",
       prompt: "prompt",
-      tweaks: [
+      versions: [
         { id: "1", text: "Hello" },
         { id: "2", text: "World" },
       ],
@@ -21,7 +21,7 @@ describe("Prompt Form Component", () => {
       id: crypto.randomUUID(),
       title: "New Prompt",
       prompt: "prompt",
-      tweaks: [
+      versions: [
         { id: "1", text: "Hello" },
         { id: "2", text: "World" },
       ],

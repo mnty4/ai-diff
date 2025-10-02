@@ -6,7 +6,7 @@ describe("prompt-carousel", () => {
       id: crypto.randomUUID(),
       title: "New Prompt",
       prompt: "prompt",
-      tweaks: [
+      versions: [
         { id: "1", text: "Hello" },
         { id: "2", text: "World" },
       ],

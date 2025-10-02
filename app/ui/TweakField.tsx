@@ -1,15 +1,15 @@
 import Image from "next/image";
 import editSvg from "@/public/edit-pencil.svg";
-import { Prompt, Tweak } from "@/app/lib/definitions";
+import { Prompt, Version } from "@/app/lib/definitions";
 import HighlightableText, { TextSelection } from "@/app/ui/HighlightableText";
 import { useState } from "react";
 
 export default function TweakField({
-  tweak,
+  version,
   onUpdateTweak,
 }: {
-  tweak: Tweak;
-  onUpdateTweak?: (value: Tweak) => void;
+  version: Version;
+  onUpdateTweak?: (value: Version) => void;
 }) {
   const [selection, setSelection] = useState<TextSelection | null>(null);
 
@@ -27,7 +27,7 @@ export default function TweakField({
         }
         onChange={(e) =>
           onUpdateTweak?.({
-            id: tweak.id,
+            id: version.id,
             text: e.target.value,
           })
         }
@@ -42,7 +42,7 @@ export default function TweakField({
         //   "\n" +
         //   "Phasellus et est turpis. Quisque rhoncus tortor ac dui mollis facilisis. Nullam pretium, quam vel rutrum imperdiet, tortor ligula dictum diam, tempus vehicula eros magna vel felis. Ut eget dictum purus. Maecenas ullamcorper sit amet ipsum a mollis. Vivamus ut euismod sem. Nulla eget consectetur dui."
         // }
-        value={tweak.text}
+        value={version.text}
       />
     </div>
   );

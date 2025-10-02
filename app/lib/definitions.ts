@@ -2,9 +2,10 @@ export type Prompt = {
   id: string;
   title: string;
   prompt: string;
-  tweaks: Tweak[];
+  versions: Version[];
+  tweak?: string;
 };
-export type Tweak = {
+export type Version = {
   id: string;
   text?: string;
   isLoading?: boolean;
@@ -12,8 +13,9 @@ export type Tweak = {
 export type PromptDataAction =
   | { type: "setTitle"; payload: string }
   | { type: "updatePrompt"; payload: string }
-  | { type: "setTweaks"; payload: Tweak[] }
-  | { type: "addTweak"; payload: Tweak }
-  | { type: "updateTweak"; payload: Tweak }
-  | { type: "removeTweak"; id: string }
-  | { type: "branch"; index: number; payload: Tweak };
+  | { type: "setVersions"; payload: Version[] }
+  | { type: "addVersion"; payload: Version }
+  | { type: "updateVersion"; payload: Version }
+  | { type: "removeVersion"; id: string }
+  | { type: "updateTweak"; payload: string }
+  | { type: "branch"; index: number; payload: Version };
