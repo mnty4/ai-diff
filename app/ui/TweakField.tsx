@@ -15,11 +15,11 @@ export default function TweakField({
 
   return (
     <div className={"bg-gray-900 rounded-xl h-124 w-116 p-4"}>
-      <HighlightableText
-        text={tweak.text || ""}
-        selection={selection}
-        setSelection={setSelection}
-      />
+      {/*<HighlightableText*/}
+      {/*  text={tweak.text || ""}*/}
+      {/*  selection={selection}*/}
+      {/*  setSelection={setSelection}*/}
+      {/*/>*/}
 
       <textarea
         className={

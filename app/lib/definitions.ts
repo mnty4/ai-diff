@@ -1,4 +1,5 @@
 export type Prompt = {
+  id: string;
   title: string;
   prompt: string;
   tweaks: Tweak[];
@@ -10,6 +11,7 @@ export type Tweak = {
 };
 export type PromptDataAction =
   | { type: "setTitle"; payload: string }
+  | { type: "updatePrompt"; payload: string }
   | { type: "setTweaks"; payload: Tweak[] }
   | { type: "addTweak"; payload: Tweak }
   | { type: "updateTweak"; payload: Tweak }

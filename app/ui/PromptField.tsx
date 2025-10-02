@@ -9,28 +9,23 @@ export default function PromptField({
   onUpdatePrompt,
 }: {
   prompt: string;
-  onUpdatePrompt?: (value: Prompt) => void;
+  onUpdatePrompt?: (value: string) => void;
 }) {
   const [selection, setSelection] = useState<TextSelection | null>(null);
 
   return (
     <div className={"bg-gray-900 rounded-xl h-124 w-116 p-4"}>
-      <HighlightableText
-        text={prompt || ""}
-        selection={selection}
-        setSelection={setSelection}
-      />
+      {/*<HighlightableText*/}
+      {/*  text={prompt || ""}*/}
+      {/*  selection={selection}*/}
+      {/*  setSelection={setSelection}*/}
+      {/*/>*/}
 
       <textarea
         className={
           "h-full w-full border-none outline-none resize-none bg-transparent"
         }
-        // onChange={(e) =>
-        //   onUpdatePrompt?.({
-        //     id: prompt.id,
-        //     text: e.target.value,
-        //   })
-        // }
+        onChange={(e) => onUpdatePrompt?.(e.target.value)}
         // defaultValue={
         //   "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam a neque id dolor ullamcorper hendrerit. Ut maximus ornare metus, vitae dignissim est. Nam in risus eros. Sed sodales, purus at egestas volutpat, tortor metus maximus velit, ac lobortis odio dui vel orci. Aenean erat arcu, fermentum ac sem at, molestie pharetra dolor. Maecenas fringilla augue in tortor euismod rutrum vitae vitae enim. Sed sed gravida sapien, nec viverra justo. Maecenas nec scelerisque nisl. Ut dui tortor, tincidunt ut accumsan vitae, imperdiet vitae ipsum. Pellentesque dictum lectus metus, ut aliquet ipsum rhoncus malesuada. Pellentesque pretium lectus nec lacus semper ullamcorper.\n" +
         //   "\n" +

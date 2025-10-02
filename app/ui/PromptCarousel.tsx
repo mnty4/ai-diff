@@ -11,12 +11,14 @@ import PromptFieldSkeleton from "@/app/ui/PromptFieldSkeleton";
 import TweakField from "@/app/ui/TweakField";
 
 export default function PromptCarousel({
-  tweaks,
+  prompt,
+  onUpdatePrompt,
   onUpdateTweak,
   onSelectSlide,
   branchKey,
 }: {
-  tweaks: Tweak[];
+  prompt: Prompt;
+  onUpdatePrompt?: (prompt: string) => void;
   onUpdateTweak?: (value: Tweak) => void;
   onSelectSlide?: (index: number) => void;
   branchKey?: string;
@@ -44,7 +46,7 @@ export default function PromptCarousel({
   );
   const handleSelect = useCallback(() => {
     if (emblaApi) {
-      console.log(emblaApi.selectedScrollSnap());
+      // console.log(emblaApi.selectedScrollSnap());
       const index = emblaApi.selectedScrollSnap();
       onSelectSlide?.(index);
     }
@@ -52,8 +54,8 @@ export default function PromptCarousel({
 
   useEffect(() => {
     if (emblaApi) {
-      console.log(emblaApi.scrollProgress());
-      console.log(emblaApi.slideNodes()); // Access API
+      // console.log(emblaApi.scrollProgress());
+      // console.log(emblaApi.slideNodes()); // Access API
 
       emblaApi.on("slidesInView", handleSlidesInView);
       emblaApi.on("select", handleSelect);
@@ -65,10 +67,9 @@ export default function PromptCarousel({
       return;
     }
     requestAnimationFrame(() => {
-      console.log("hehexd");
-      emblaApi.scrollTo(tweaks.length - 1);
+      emblaApi.scrollTo(prompt.tweaks.length);
     });
-  }, [emblaApi, branchKey, tweaks.length]);
+  }, [emblaApi, branchKey, prompt.tweaks.length]);
 
   return (
     <div className="embla relative">
@@ -77,7 +78,13 @@ export default function PromptCarousel({
           <div className="embla__slide">
             <div className="w-112"></div>
           </div>
-          {tweaks.map((tweak) => (
+          <div key={prompt.id} className="embla__slide mx-12">
+            <PromptField
+              prompt={prompt.prompt}
+              onUpdatePrompt={onUpdatePrompt}
+            />
+          </div>
+          {prompt.tweaks.map((tweak) => (
             <div key={tweak.id} className="embla__slide mx-12">
               {tweak.isLoading ? (
                 <PromptFieldSkeleton />
