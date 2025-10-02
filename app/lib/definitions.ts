@@ -8,7 +8,8 @@ export type Prompt = {
 export type Version = {
   id: string;
   text?: string;
-  isLoading?: boolean;
+  status?: "ready" | "loading" | "error";
+  errorMsg?: string;
 };
 export type PromptDataAction =
   | { type: "setTitle"; payload: string }
