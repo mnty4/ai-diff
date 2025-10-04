@@ -24,7 +24,7 @@ export default function PromptCarousel({
   onUpdateTweak?: (value: Version) => void;
   onSelectSlide?: (index: number) => void;
   branchKey?: string;
-  onRetry?: () => void;
+  onRetry?: (index: number) => void;
 }) {
   const [emblaRef, emblaApi] = useEmblaCarousel();
   const [hideLeftButton, setHideLeftButton] = useState(true);
@@ -87,14 +87,17 @@ export default function PromptCarousel({
               onUpdatePrompt={onUpdatePrompt}
             />
           </div>
-          {prompt.versions.map((tweak) => (
-            <div key={tweak.id} className="embla__slide mx-12">
-              {tweak.status === "loading" && <PromptFieldSkeleton />}
-              {tweak.status === "error" && (
-                <TweakFieldError onRetry={onRetry} errorMsg={tweak.errorMsg} />
+          {prompt.versions.map((version, index) => (
+            <div key={version.id} className="embla__slide mx-12">
+              {version.status === "loading" && <PromptFieldSkeleton />}
+              {version.status === "error" && (
+                <TweakFieldError
+                  onRetry={() => onRetry?.(index)}
+                  errorMsg={version.errorMsg}
+                />
               )}
-              {tweak.status === "ready" && (
-                <TweakField version={tweak} onUpdateTweak={onUpdateTweak} />
+              {version.status === "ready" && (
+                <TweakField version={version} onUpdateTweak={onUpdateTweak} />
               )}
             </div>
           ))}

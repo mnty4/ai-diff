@@ -84,7 +84,7 @@ export default function PromptForm({
     };
     dispatch({
       type: "branch",
-      index: selectedPromptIndex,
+      index: 0,
       payload: dummyTweak,
     });
     setBranchKey(crypto.randomUUID());
@@ -120,18 +120,19 @@ export default function PromptForm({
     }
   };
 
-  const handleTweak = async () => {
+  const handleTweak = async (providedIndex?: number) => {
+    const index = providedIndex || selectedPromptIndex;
     const dummyTweak: Version = {
       id: crypto.randomUUID(),
       status: "loading",
     };
     dispatch({
       type: "branch",
-      index: selectedPromptIndex,
+      index: index,
       payload: dummyTweak,
     });
     setBranchKey(crypto.randomUUID());
-    const version = state.versions[selectedPromptIndex - 1].text || "";
+    const version = state.versions[index - 1].text || "";
     const tweak = state.tweak || "";
     const prompt = state.prompt;
     if (!version || !prompt || !tweak) {
@@ -168,6 +169,14 @@ export default function PromptForm({
       });
     }
   };
+  const handleRetry = (index: number) => {
+    console.log(index);
+    if (index === 0) {
+      handleGenerate();
+    } else {
+      handleTweak(index);
+    }
+  };
 
   return (
     <form
@@ -185,10 +194,29 @@ export default function PromptForm({
         }
         onSelectSlide={(index) => setSelectedPromptIndex(index)}
         branchKey={branchKey}
-        onRetry={() => {}}
+        onRetry={(index) => handleRetry(index)}
       />
-
-      {isPromptSelected ? (
+      {/*{isPromptSelected ? (*/}
+      {/*  <button*/}
+      {/*    id="generate-btn"*/}
+      {/*    className={*/}
+      {/*      "bg-white rounded-lg px-4 py-2 text-black flex items-center gap-2 hover:scale-110 transition duration-200 ease-in cursor-pointer"*/}
+      {/*    }*/}
+      {/*    type="button"*/}
+      {/*    onClick={handleGenerate}*/}
+      {/*  >*/}
+      {/*    Generate*/}
+      {/*  </button>*/}
+      {/*) : (*/}
+      {/*  <TweakWrapper*/}
+      {/*    tweak={state.tweak || ""}*/}
+      {/*    onChange={(e) =>*/}
+      {/*      dispatch({ type: "updateTweak", payload: e.target.value })*/}
+      {/*    }*/}
+      {/*    handleSubmit={() => handleTweak()}*/}
+      {/*  />*/}
+      {/*)}*/}
+      {isPromptSelected && (
         <button
           id="generate-btn"
           className={
@@ -199,15 +227,17 @@ export default function PromptForm({
         >
           Generate
         </button>
-      ) : (
-        <TweakWrapper
-          tweak={state.tweak || ""}
-          onChange={(e) =>
-            dispatch({ type: "updateTweak", payload: e.target.value })
-          }
-          handleSubmit={handleTweak}
-        />
       )}
+      {!isPromptSelected &&
+        state.versions[selectedPromptIndex - 1]?.status === "ready" && (
+          <TweakWrapper
+            tweak={state.tweak || ""}
+            onChange={(e) =>
+              dispatch({ type: "updateTweak", payload: e.target.value })
+            }
+            handleSubmit={() => handleTweak()}
+          />
+        )}
     </form>
   );
 }

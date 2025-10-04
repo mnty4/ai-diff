@@ -9,7 +9,7 @@ export default function TweakWrapper({
 }: {
   tweak: string;
   onChange: ChangeEventHandler<HTMLTextAreaElement>;
-  handleSubmit: MouseEventHandler<HTMLButtonElement>;
+  handleSubmit: () => void;
 }) {
   const [showTweakModal, setShowTweakModal] = useState(false);
   const tweakButtonRef = useRef<HTMLButtonElement>(null);
@@ -20,9 +20,9 @@ export default function TweakWrapper({
         showTweakModal={showTweakModal}
         value={tweak}
         onChange={onChange}
-        handleSubmit={(e) => {
+        handleSubmit={() => {
           setShowTweakModal(false);
-          handleSubmit(e);
+          handleSubmit();
         }}
         tweakButtonRef={tweakButtonRef}
       />
