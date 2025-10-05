@@ -6,6 +6,9 @@ import { Prompt, PromptDataAction, Version } from "@/app/lib/definitions";
 import { useReducer, useState } from "react";
 import { generate } from "@/app/lib/actions";
 import TweakWrapper from "@/app/ui/tweak-wrapper";
+import clsx from "clsx";
+import { AnimatePresence } from "motion/react";
+import * as motion from "motion/react-client";
 
 function promptDataReducer(state: Prompt, action: PromptDataAction): Prompt {
   switch (action.type) {
@@ -216,28 +219,73 @@ export default function PromptForm({
       {/*    handleSubmit={() => handleTweak()}*/}
       {/*  />*/}
       {/*)}*/}
-      {isPromptSelected && (
-        <button
-          id="generate-btn"
-          className={
-            "bg-white rounded-lg px-4 py-2 text-black flex items-center gap-2 hover:scale-110 transition duration-200 ease-in cursor-pointer"
-          }
-          type="button"
-          onClick={handleGenerate}
-        >
-          Generate
-        </button>
-      )}
-      {!isPromptSelected &&
-        state.versions[selectedPromptIndex - 1]?.status === "ready" && (
-          <TweakWrapper
-            tweak={state.tweak || ""}
-            onChange={(e) =>
-              dispatch({ type: "updateTweak", payload: e.target.value })
-            }
-            handleSubmit={() => handleTweak()}
-          />
+
+      <AnimatePresence mode="wait">
+        {isPromptSelected && (
+          <motion.div
+            key="generate"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+          >
+            <button
+              id="generate-btn"
+              className={clsx([
+                "bg-white rounded-lg px-4 py-2 text-black flex items-center gap-2",
+                "hover:scale-110 transition duration-200 ease-in cursor-pointer",
+              ])}
+              type="button"
+              onClick={handleGenerate}
+            >
+              Generate
+            </button>
+          </motion.div>
         )}
+
+        {!isPromptSelected &&
+          state.versions[selectedPromptIndex - 1]?.status === "ready" && (
+            <motion.div
+              key="tweak"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.2 }}
+            >
+              <TweakWrapper
+                tweak={state.tweak || ""}
+                onChange={(e) =>
+                  dispatch({ type: "updateTweak", payload: e.target.value })
+                }
+                handleSubmit={() => handleTweak()}
+              />
+            </motion.div>
+          )}
+      </AnimatePresence>
+
+      {/*{isPromptSelected && (*/}
+      {/*  <button*/}
+      {/*    id="generate-btn"*/}
+      {/*    className={clsx([*/}
+      {/*      "bg-white rounded-lg px-4 py-2 text-black flex items-center gap-2 hover:scale-110 transition duration-200 ease-in cursor-pointer",*/}
+      {/*      isPromptSelected ? "opacity-100" : "opacity-0 pointer-events-none",*/}
+      {/*    ])}*/}
+      {/*    type="button"*/}
+      {/*    onClick={handleGenerate}*/}
+      {/*  >*/}
+      {/*    Generate*/}
+      {/*  </button>*/}
+      {/*)}*/}
+      {/*{!isPromptSelected &&*/}
+      {/*  state.versions[selectedPromptIndex - 1]?.status === "ready" && (*/}
+      {/*    <TweakWrapper*/}
+      {/*      tweak={state.tweak || ""}*/}
+      {/*      onChange={(e) =>*/}
+      {/*        dispatch({ type: "updateTweak", payload: e.target.value })*/}
+      {/*      }*/}
+      {/*      handleSubmit={() => handleTweak()}*/}
+      {/*    />*/}
+      {/*  )}*/}
     </form>
   );
 }

@@ -1,15 +1,17 @@
 import TweakModal from "@/app/ui/tweak-modal";
 import clsx from "clsx";
-import { ChangeEventHandler, MouseEventHandler, useRef, useState } from "react";
+import { ChangeEventHandler, useRef, useState } from "react";
 
 export default function TweakWrapper({
   tweak,
   onChange,
   handleSubmit,
+  // showBtn,
 }: {
   tweak: string;
   onChange: ChangeEventHandler<HTMLTextAreaElement>;
   handleSubmit: () => void;
+  // showBtn: boolean;
 }) {
   const [showTweakModal, setShowTweakModal] = useState(false);
   const tweakButtonRef = useRef<HTMLButtonElement>(null);
@@ -33,6 +35,7 @@ export default function TweakWrapper({
         className={clsx([
           "rounded-lg px-4 py-2 flex items-center gap-2 hover:scale-110 transition duration-200 ease-in cursor-pointer",
           showTweakModal ? "bg-white text-black" : "bg-purple-600 text-white",
+          // showBtn ? "opacity-100" : "opacity-0 pointer-events-none absolute",
         ])}
         type="button"
         onClick={() => setShowTweakModal(!showTweakModal)}
