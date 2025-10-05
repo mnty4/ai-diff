@@ -7,11 +7,21 @@ import { useState } from "react";
 export default function TweakField({
   version,
   onUpdateTweak,
+  handleTweak,
 }: {
   version: Version;
   onUpdateTweak?: (value: Version) => void;
+  handleTweak?: () => void;
 }) {
   const [selection, setSelection] = useState<TextSelection | null>(null);
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    // Cmd (Mac) or Ctrl (Windows) + Enter
+    if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+      e.preventDefault();
+      handleTweak?.();
+    }
+  };
 
   return (
     <div className={"bg-gray-900 rounded-xl h-124 w-116 p-4"}>
@@ -31,6 +41,7 @@ export default function TweakField({
             text: e.target.value,
           })
         }
+        onKeyDown={handleKeyDown}
         // defaultValue={
         //   "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam a neque id dolor ullamcorper hendrerit. Ut maximus ornare metus, vitae dignissim est. Nam in risus eros. Sed sodales, purus at egestas volutpat, tortor metus maximus velit, ac lobortis odio dui vel orci. Aenean erat arcu, fermentum ac sem at, molestie pharetra dolor. Maecenas fringilla augue in tortor euismod rutrum vitae vitae enim. Sed sed gravida sapien, nec viverra justo. Maecenas nec scelerisque nisl. Ut dui tortor, tincidunt ut accumsan vitae, imperdiet vitae ipsum. Pellentesque dictum lectus metus, ut aliquet ipsum rhoncus malesuada. Pellentesque pretium lectus nec lacus semper ullamcorper.\n" +
         //   "\n" +

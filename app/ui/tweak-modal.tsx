@@ -8,21 +8,24 @@ import {
 } from "react";
 
 export default function TweakModal({
-  showTweakModal,
   setShowTweakModal,
   handleSubmit,
   value,
   onChange,
   tweakButtonRef,
 }: {
-  showTweakModal: boolean;
   setShowTweakModal: (showTweakModal: boolean) => void;
   value: string;
   onChange: ChangeEventHandler<HTMLTextAreaElement>;
-  handleSubmit: MouseEventHandler<HTMLButtonElement>;
+  handleSubmit: () => void;
   tweakButtonRef: RefObject<HTMLButtonElement | null>;
 }) {
   const modalRef = useRef<HTMLDivElement>(null);
+  const textAreaRef = useRef<HTMLTextAreaElement>(null);
+  useEffect(() => {
+    textAreaRef.current?.focus();
+  }, []);
+
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       const target = e.target as Node;
@@ -38,6 +41,15 @@ export default function TweakModal({
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [setShowTweakModal, tweakButtonRef]);
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    // Cmd (Mac) or Ctrl (Windows) + Enter
+    if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+      e.preventDefault();
+      handleSubmit();
+    }
+  };
+
   return (
     <div
       ref={modalRef}
@@ -46,7 +58,6 @@ export default function TweakModal({
         "mb-6 bg-black rounded-xl w-96 h-64 p-4",
         "transition-opacity duration-150 ease-in",
         "flex flex-col gap-4",
-        showTweakModal ? "" : "opacity-0 pointer-events-none",
       ])}
     >
       <div
@@ -55,12 +66,13 @@ export default function TweakModal({
       />
 
       <textarea
+        ref={textAreaRef}
         className={
           "flex-grow border-none outline-none resize-none bg-transparent"
         }
         onChange={onChange}
         value={value}
-        onKeyDown={(e) => e.key === "Enter" && handleSubmit}
+        onKeyDown={handleKeyDown}
       />
       <button
         id="tweak-submit-btn"

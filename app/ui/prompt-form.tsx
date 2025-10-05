@@ -72,6 +72,7 @@ export default function PromptForm({
   const [state, dispatch] = useReducer(promptDataReducer, initialPrompt);
   const [selectedPromptIndex, setSelectedPromptIndex] = useState<number>(0);
   const isPromptSelected = selectedPromptIndex === 0;
+  const [showTweakModal, setShowTweakModal] = useState(false);
 
   // the branch key keeps track of the most recent branch operation (delete all slides after current
   // and adds new prompt output). Necessary to refresh the hook for scrolling to end of prompt slides
@@ -198,27 +199,9 @@ export default function PromptForm({
         onSelectSlide={(index) => setSelectedPromptIndex(index)}
         branchKey={branchKey}
         onRetry={(index) => handleRetry(index)}
+        handleTweak={() => setShowTweakModal(true)}
+        handleGenerate={handleGenerate}
       />
-      {/*{isPromptSelected ? (*/}
-      {/*  <button*/}
-      {/*    id="generate-btn"*/}
-      {/*    className={*/}
-      {/*      "bg-white rounded-lg px-4 py-2 text-black flex items-center gap-2 hover:scale-110 transition duration-200 ease-in cursor-pointer"*/}
-      {/*    }*/}
-      {/*    type="button"*/}
-      {/*    onClick={handleGenerate}*/}
-      {/*  >*/}
-      {/*    Generate*/}
-      {/*  </button>*/}
-      {/*) : (*/}
-      {/*  <TweakWrapper*/}
-      {/*    tweak={state.tweak || ""}*/}
-      {/*    onChange={(e) =>*/}
-      {/*      dispatch({ type: "updateTweak", payload: e.target.value })*/}
-      {/*    }*/}
-      {/*    handleSubmit={() => handleTweak()}*/}
-      {/*  />*/}
-      {/*)}*/}
 
       <AnimatePresence mode="wait">
         {isPromptSelected && (
@@ -258,34 +241,12 @@ export default function PromptForm({
                   dispatch({ type: "updateTweak", payload: e.target.value })
                 }
                 handleSubmit={() => handleTweak()}
+                setShowTweakModal={setShowTweakModal}
+                showTweakModal={showTweakModal}
               />
             </motion.div>
           )}
       </AnimatePresence>
-
-      {/*{isPromptSelected && (*/}
-      {/*  <button*/}
-      {/*    id="generate-btn"*/}
-      {/*    className={clsx([*/}
-      {/*      "bg-white rounded-lg px-4 py-2 text-black flex items-center gap-2 hover:scale-110 transition duration-200 ease-in cursor-pointer",*/}
-      {/*      isPromptSelected ? "opacity-100" : "opacity-0 pointer-events-none",*/}
-      {/*    ])}*/}
-      {/*    type="button"*/}
-      {/*    onClick={handleGenerate}*/}
-      {/*  >*/}
-      {/*    Generate*/}
-      {/*  </button>*/}
-      {/*)}*/}
-      {/*{!isPromptSelected &&*/}
-      {/*  state.versions[selectedPromptIndex - 1]?.status === "ready" && (*/}
-      {/*    <TweakWrapper*/}
-      {/*      tweak={state.tweak || ""}*/}
-      {/*      onChange={(e) =>*/}
-      {/*        dispatch({ type: "updateTweak", payload: e.target.value })*/}
-      {/*      }*/}
-      {/*      handleSubmit={() => handleTweak()}*/}
-      {/*    />*/}
-      {/*  )}*/}
     </form>
   );
 }
