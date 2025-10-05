@@ -23,8 +23,16 @@ export default function TweakModal({
   const modalRef = useRef<HTMLDivElement>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
   useEffect(() => {
-    textAreaRef.current?.focus();
+    focusTextarea();
   }, []);
+
+  const focusTextarea = () => {
+    const el = textAreaRef.current;
+    if (!el) return;
+    el.focus();
+    const len = value.length;
+    el.setSelectionRange(len, len);
+  };
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
