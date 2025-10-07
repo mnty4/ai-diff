@@ -32,7 +32,7 @@ export default function PromptField({
       {/*/>*/}
 
       <textarea
-        onKeyDown={handleKeyDown}
+        // onKeyDown={handleKeyDown}
         className={
           "h-full w-full border-none outline-none resize-none bg-transparent"
         }

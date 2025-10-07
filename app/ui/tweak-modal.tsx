@@ -3,6 +3,7 @@ import {
   ChangeEventHandler,
   MouseEventHandler,
   RefObject,
+  useCallback,
   useEffect,
   useRef,
 } from "react";
@@ -22,17 +23,18 @@ export default function TweakModal({
 }) {
   const modalRef = useRef<HTMLDivElement>(null);
   const textAreaRef = useRef<HTMLTextAreaElement>(null);
-  useEffect(() => {
-    focusTextarea();
-  }, []);
 
-  const focusTextarea = () => {
+  const focusTextarea = useCallback(() => {
     const el = textAreaRef.current;
     if (!el) return;
     el.focus();
     const len = value.length;
     el.setSelectionRange(len, len);
-  };
+  }, [value.length]);
+
+  useEffect(() => {
+    focusTextarea();
+  }, [focusTextarea]);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {

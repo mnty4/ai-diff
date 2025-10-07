@@ -3,7 +3,7 @@
 import TitleField from "@/app/ui/TitleField";
 import PromptCarousel from "@/app/ui/PromptCarousel";
 import { Prompt, PromptDataAction, Version } from "@/app/lib/definitions";
-import { useReducer, useState } from "react";
+import { useCallback, useEffect, useReducer, useState } from "react";
 import { generate } from "@/app/lib/actions";
 import TweakWrapper from "@/app/ui/tweak-wrapper";
 import clsx from "clsx";
@@ -81,7 +81,7 @@ export default function PromptForm({
     e.preventDefault();
   };
 
-  const handleGenerate = async () => {
+  const handleGenerate = useCallback(async () => {
     const dummyTweak: Version = {
       id: crypto.randomUUID(),
       status: "loading",
@@ -122,7 +122,24 @@ export default function PromptForm({
         },
       });
     }
-  };
+  }, [state.prompt]);
+
+  useEffect(() => {
+    const handleGlobalKeyDown = async (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
+        e.preventDefault();
+        if (isPromptSelected) {
+          await handleGenerate();
+        } else {
+          setShowTweakModal((prev) => !prev);
+        }
+      }
+    };
+    window.addEventListener("keydown", handleGlobalKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleGlobalKeyDown);
+    };
+  }, [handleGenerate, isPromptSelected, setShowTweakModal]);
 
   const handleTweak = async (providedIndex?: number) => {
     const index = providedIndex || selectedPromptIndex;

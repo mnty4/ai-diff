@@ -36,10 +36,7 @@ export default function TweakWrapper({
               setShowTweakModal={setShowTweakModal}
               value={tweak}
               onChange={onChange}
-              handleSubmit={() => {
-                setShowTweakModal(false);
-                handleSubmit();
-              }}
+              handleSubmit={handleSubmit}
               tweakButtonRef={tweakButtonRef}
             />
           </motion.div>
