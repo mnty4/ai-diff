@@ -45,7 +45,7 @@ export default function TweakWrapper({
 
       <button
         ref={tweakButtonRef}
-        id="tweak-btn"
+        data-testid="tweak-btn"
         className={clsx([
           "rounded-lg px-4 py-2 flex items-center gap-2 hover:scale-110 transition duration-200 ease-in cursor-pointer",
           showTweakModal ? "bg-white text-black" : "bg-purple-600 text-white",

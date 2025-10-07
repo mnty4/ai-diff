@@ -11,6 +11,11 @@ export default defineConfig({
     devServer: {
       framework: "next",
       bundler: "webpack",
+      webpackConfig: {
+        devServer: {
+          allowedHosts: ["localhost", "127.0.0.1"],
+        },
+      },
     },
   },
 });

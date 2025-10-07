@@ -2,10 +2,15 @@
 
 import Image from "next/image";
 import editSvg from "@/public/edit-pencil.svg";
-import { useEffect, useRef, useState } from "react";
+import { Dispatch, useEffect, useRef, useState } from "react";
 
-export default function TitleField() {
-  const [title, setTitle] = useState("New Prompt");
+export default function TitleField({
+  title,
+  setTitle,
+}: {
+  title: string;
+  setTitle: (title: string) => void;
+}) {
   // const titleRef = useRef<HTMLInputElement | null>(null);
   const measureTitleRef = useRef<HTMLSpanElement | null>(null);
 

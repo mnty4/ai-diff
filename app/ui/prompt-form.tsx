@@ -66,8 +66,10 @@ This is the users instruction for tweaking the current version: [
 
 export default function PromptForm({
   initialPrompt,
+  generateAction = generate,
 }: {
   initialPrompt: Prompt;
+  generateAction?: (text: string) => Promise<string>;
 }) {
   const [state, dispatch] = useReducer(promptDataReducer, initialPrompt);
   const [selectedPromptIndex, setSelectedPromptIndex] = useState<number>(0);
@@ -82,6 +84,7 @@ export default function PromptForm({
   };
 
   const handleGenerate = useCallback(async () => {
+    debugger;
     const dummyTweak: Version = {
       id: crypto.randomUUID(),
       status: "loading",
@@ -104,7 +107,7 @@ export default function PromptForm({
       return;
     }
     try {
-      const res = await generate(state.prompt);
+      const res = await generateAction(state.prompt);
       dispatch({
         type: "updateVersion",
         payload: {
@@ -204,7 +207,10 @@ export default function PromptForm({
       className={"flex flex-col justify-center items-center gap-4"}
       onSubmit={handleSubmit}
     >
-      <TitleField />
+      <TitleField
+        title={state.title}
+        setTitle={(title) => dispatch({ type: "setTitle", payload: title })}
+      />
       <PromptCarousel
         prompt={state}
         onUpdateTweak={(value) =>
@@ -219,7 +225,6 @@ export default function PromptForm({
         handleTweak={() => setShowTweakModal(true)}
         handleGenerate={handleGenerate}
       />
-
       <AnimatePresence mode="wait">
         {isPromptSelected && (
           <motion.div
@@ -230,7 +235,7 @@ export default function PromptForm({
             transition={{ duration: 0.2 }}
           >
             <button
-              id="generate-btn"
+              data-testid="generate-btn"
               className={clsx([
                 "bg-white rounded-lg px-4 py-2 text-black flex items-center gap-2",
                 "hover:scale-110 transition duration-200 ease-in cursor-pointer",

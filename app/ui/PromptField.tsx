@@ -32,6 +32,7 @@ export default function PromptField({
       {/*/>*/}
 
       <textarea
+        data-testid="generate-textarea"
         // onKeyDown={handleKeyDown}
         className={
           "h-full w-full border-none outline-none resize-none bg-transparent"
