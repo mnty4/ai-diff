@@ -12,7 +12,6 @@ export default function PromptField({
   onUpdatePrompt?: (value: string) => void;
 }) {
   const [selection, setSelection] = useState<TextSelection | null>(null);
-
   return (
     <div className={"bg-gray-900 rounded-xl p-4 w-full h-full"}>
       {/*<HighlightableText*/}
@@ -20,7 +19,6 @@ export default function PromptField({
       {/*  selection={selection}*/}
       {/*  setSelection={setSelection}*/}
       {/*/>*/}
-
       <textarea
         data-testid="prompt-textarea"
         className={
