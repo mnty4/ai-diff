@@ -18,8 +18,6 @@ export default function PromptCarousel({
   onSelectSlide,
   branchKey,
   onRetry,
-  handleGenerate,
-  handleTweak,
 }: {
   prompt: Prompt;
   onUpdatePrompt?: (prompt: string) => void;
@@ -27,8 +25,6 @@ export default function PromptCarousel({
   onSelectSlide?: (index: number) => void;
   branchKey?: string;
   onRetry?: (index: number) => void;
-  handleGenerate?: () => void;
-  handleTweak?: () => void;
 }) {
   const [emblaRef, emblaApi] = useEmblaCarousel();
   const [hideLeftButton, setHideLeftButton] = useState(true);
@@ -89,7 +85,6 @@ export default function PromptCarousel({
             <PromptField
               prompt={prompt.prompt}
               onUpdatePrompt={onUpdatePrompt}
-              handleGenerate={handleGenerate}
             />
           </div>
           {prompt.versions.map((version, index) => (
@@ -102,11 +97,7 @@ export default function PromptCarousel({
                 />
               )}
               {version.status === "ready" && (
-                <TweakField
-                  version={version}
-                  onUpdateTweak={onUpdateTweak}
-                  handleTweak={handleTweak}
-                />
+                <TweakField version={version} onUpdateTweak={onUpdateTweak} />
               )}
             </div>
           ))}

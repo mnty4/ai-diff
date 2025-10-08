@@ -222,8 +222,6 @@ export default function PromptForm({
         onSelectSlide={(index) => setSelectedPromptIndex(index)}
         branchKey={branchKey}
         onRetry={(index) => handleRetry(index)}
-        handleTweak={() => setShowTweakModal(true)}
-        handleGenerate={handleGenerate}
       />
       <AnimatePresence mode="wait">
         {isPromptSelected && (

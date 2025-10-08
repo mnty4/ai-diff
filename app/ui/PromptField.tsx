@@ -7,21 +7,11 @@ import { useState } from "react";
 export default function PromptField({
   prompt,
   onUpdatePrompt,
-  handleGenerate,
 }: {
   prompt: string;
   onUpdatePrompt?: (value: string) => void;
-  handleGenerate?: () => void;
 }) {
   const [selection, setSelection] = useState<TextSelection | null>(null);
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-    // Cmd (Mac) or Ctrl (Windows) + Enter
-    if ((e.metaKey || e.ctrlKey) && e.key === "Enter") {
-      e.preventDefault();
-      handleGenerate?.();
-    }
-  };
 
   return (
     <div className={"bg-gray-900 rounded-xl h-124 w-116 p-4"}>
@@ -33,7 +23,6 @@ export default function PromptField({
 
       <textarea
         data-testid="generate-textarea"
-        // onKeyDown={handleKeyDown}
         className={
           "h-full w-full border-none outline-none resize-none bg-transparent"
         }
