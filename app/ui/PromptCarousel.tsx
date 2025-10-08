@@ -26,9 +26,12 @@ export default function PromptCarousel({
   branchKey?: string;
   onRetry?: (index: number) => void;
 }) {
-  const [emblaRef, emblaApi] = useEmblaCarousel();
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    align: "center",
+    containScroll: false,
+  });
   const [hideLeftButton, setHideLeftButton] = useState(true);
-  const [hideRightButton, setHideRightButton] = useState(false);
+  const [hideRightButton, setHideRightButton] = useState(true);
 
   const scrollPrev = useCallback(() => {
     if (emblaApi) emblaApi.scrollPrev();
@@ -38,18 +41,20 @@ export default function PromptCarousel({
     if (emblaApi) emblaApi.scrollNext();
   }, [emblaApi]);
 
-  const handleSlidesInView = useCallback(
-    (emblaApi: EmblaCarouselType, eventName: EmblaEventType) => {
-      if (emblaApi) {
-        setHideLeftButton(!emblaApi.canScrollPrev());
-        setHideRightButton(!emblaApi.canScrollNext());
-      }
-    },
-    [],
-  );
+  // const handleSlidesInView = useCallback(
+  //   (emblaApi: EmblaCarouselType, eventName: EmblaEventType) => {
+  //     if (emblaApi) {
+  //       setHideLeftButton(!emblaApi.canScrollPrev());
+  //       setHideRightButton(!emblaApi.canScrollNext());
+  //     }
+  //   },
+  //   [],
+  // );
   const handleSelect = useCallback(() => {
     if (emblaApi) {
       // console.log(emblaApi.selectedScrollSnap());
+      setHideLeftButton(!emblaApi.canScrollPrev());
+      setHideRightButton(!emblaApi.canScrollNext());
       const index = emblaApi.selectedScrollSnap();
       onSelectSlide?.(index);
     }
@@ -60,14 +65,19 @@ export default function PromptCarousel({
       // console.log(emblaApi.scrollProgress());
       // console.log(emblaApi.slideNodes()); // Access API
 
-      emblaApi.on("slidesInView", handleSlidesInView);
-      emblaApi.on("select", handleSelect);
+      // emblaApi.on("slidesInView", handleSlidesInView);
+      emblaApi.on("reInit", handleSelect).on("select", handleSelect);
     }
-  }, [emblaApi, handleSelect, handleSlidesInView]);
+  }, [emblaApi, handleSelect]);
 
   useEffect(() => {
     if (!emblaApi) {
       return;
+    }
+    if (prompt.versions.length > 0) {
+      emblaApi.reInit({
+        align: "start",
+      });
     }
     requestAnimationFrame(() => {
       emblaApi.scrollTo(prompt.versions.length);
@@ -76,19 +86,28 @@ export default function PromptCarousel({
 
   return (
     <div className="embla relative">
-      <div className="embla__viewport" ref={emblaRef}>
-        <div className="embla__container w-[100vw]">
-          <div className="embla__slide">
-            <div className="w-112"></div>
-          </div>
-          <div key={prompt.id} className="embla__slide mx-12">
+      <div
+        className="embla__viewport w-[80vw] ml-4 overflow-hidden"
+        ref={emblaRef}
+      >
+        <div className="embla__container">
+          {/*<div className="embla__slide">*/}
+          {/*  <div className="w-112"></div>*/}
+          {/*</div>*/}
+          <div
+            key={prompt.id}
+            className={clsx(["embla__slide h-[60vh] flex-[0_0_50%] pr-4"])}
+          >
             <PromptField
               prompt={prompt.prompt}
               onUpdatePrompt={onUpdatePrompt}
             />
           </div>
           {prompt.versions.map((version, index) => (
-            <div key={version.id} className="embla__slide mx-12">
+            <div
+              key={version.id}
+              className={clsx(["embla__slide h-[60vh] flex-[0_0_50%] pr-4"])}
+            >
               {version.status === "loading" && <PromptFieldSkeleton />}
               {version.status === "error" && (
                 <TweakFieldError
@@ -101,9 +120,6 @@ export default function PromptCarousel({
               )}
             </div>
           ))}
-          <div className="embla__slide">
-            <div className="w-112"></div>
-          </div>
         </div>
       </div>
       <button

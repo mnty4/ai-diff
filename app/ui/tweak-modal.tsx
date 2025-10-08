@@ -62,6 +62,7 @@ export default function TweakModal({
 
   return (
     <div
+      data-testid="tweak-modal"
       ref={modalRef}
       className={clsx([
         "absolute bottom-full left-1/2 -translate-x-1/2 ",
@@ -76,6 +77,7 @@ export default function TweakModal({
       />
 
       <textarea
+        data-testid="tweak-modal-textarea"
         ref={textAreaRef}
         className={
           "flex-grow border-none outline-none resize-none bg-transparent"
@@ -85,12 +87,16 @@ export default function TweakModal({
         onKeyDown={handleKeyDown}
       />
       <button
-        id="tweak-submit-btn"
+        data-testid="tweak-submit-btn"
         className={
           "self-center text-sm bg-purple-600 rounded-lg px-4 py-2 text-white flex items-center gap-2 hover:scale-110 transition duration-200 ease-in cursor-pointer"
         }
         type="button"
-        onClick={handleSubmit}
+        onClick={(e) => {
+          e.preventDefault();
+          setShowTweakModal(false);
+          handleSubmit();
+        }}
       >
         Submit
       </button>

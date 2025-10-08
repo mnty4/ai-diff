@@ -60,7 +60,6 @@ describe("Prompt Form Component", () => {
 });
 
 /* TODO:
-- prompt form mounts correctly
 - prompt, tweaks and title are stored in local storage.
 - load from local storage on reload
  */

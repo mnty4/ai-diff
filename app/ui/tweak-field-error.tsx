@@ -6,7 +6,7 @@ export default function TweakFieldError({
   onRetry,
 }: { errorMsg?: string; onRetry?: () => void } = {}) {
   return (
-    <div className="bg-gray-900 rounded-xl h-124 w-116 p-4 flex flex-col gap-4 justify-center items-center">
+    <div className="bg-gray-900 rounded-xl w-full h-full p-4 flex flex-col gap-4 justify-center items-center">
       <span>{errorMsg || "Something went wrong..."}</span>
       <div
         className={

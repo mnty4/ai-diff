@@ -1,6 +1,6 @@
 export default function PromptFieldSkeleton() {
   return (
-    <div className="bg-gray-900 rounded-xl h-124 w-116 p-4 flex flex-col gap-2 animate-pulse">
+    <div className="bg-gray-900 rounded-xl w-full h-full p-4 flex flex-col gap-2 animate-pulse">
       {/*<div className="h-4 bg-gray-700 rounded w-3/4 animate-pulse" />*/}
       {/*<div className="h-4 bg-gray-700 rounded w-full animate-pulse" />*/}
       {/*<div className="h-4 bg-gray-700 rounded w-5/6 animate-pulse" />*/}

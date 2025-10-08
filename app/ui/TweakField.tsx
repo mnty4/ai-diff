@@ -14,7 +14,7 @@ export default function TweakField({
   const [selection, setSelection] = useState<TextSelection | null>(null);
 
   return (
-    <div className={"bg-gray-900 rounded-xl h-124 w-116 p-4"}>
+    <div className={"bg-gray-900 rounded-xl p-4 w-full h-full"}>
       {/*<HighlightableText*/}
       {/*  text={tweak.text || ""}*/}
       {/*  selection={selection}*/}
@@ -22,6 +22,7 @@ export default function TweakField({
       {/*/>*/}
 
       <textarea
+        data-testid="tweak-textarea"
         className={
           "h-full w-full border-none outline-none resize-none bg-transparent"
         }

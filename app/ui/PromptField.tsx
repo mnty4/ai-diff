@@ -14,7 +14,7 @@ export default function PromptField({
   const [selection, setSelection] = useState<TextSelection | null>(null);
 
   return (
-    <div className={"bg-gray-900 rounded-xl h-124 w-116 p-4"}>
+    <div className={"bg-gray-900 rounded-xl p-4 w-full h-full"}>
       {/*<HighlightableText*/}
       {/*  text={prompt || ""}*/}
       {/*  selection={selection}*/}
@@ -22,7 +22,7 @@ export default function PromptField({
       {/*/>*/}
 
       <textarea
-        data-testid="generate-textarea"
+        data-testid="prompt-textarea"
         className={
           "h-full w-full border-none outline-none resize-none bg-transparent"
         }
