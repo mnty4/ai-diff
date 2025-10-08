@@ -14,14 +14,14 @@ import TweakFieldError from "@/app/ui/tweak-field-error";
 export default function PromptCarousel({
   prompt,
   onUpdatePrompt,
-  onUpdateTweak,
+  onUpdateVersion,
   onSelectSlide,
   branchKey,
   onRetry,
 }: {
   prompt: Prompt;
   onUpdatePrompt?: (prompt: string) => void;
-  onUpdateTweak?: (value: Version) => void;
+  onUpdateVersion?: (value: Version) => void;
   onSelectSlide?: (index: number) => void;
   branchKey?: string;
   onRetry?: (index: number) => void;
@@ -120,7 +120,7 @@ export default function PromptCarousel({
                 />
               )}
               {version.status === "ready" && (
-                <TweakField version={version} onUpdateTweak={onUpdateTweak} />
+                <TweakField version={version} onUpdateTweak={onUpdateVersion} />
               )}
             </div>
           ))}

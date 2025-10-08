@@ -22,7 +22,7 @@ function promptDataReducer(state: Prompt, action: PromptDataAction): Prompt {
       return {
         ...state,
         versions: state.versions.map((t) =>
-          t.id === action.payload.id ? action.payload : t,
+          t.id === action.payload.id ? { ...t, ...action.payload } : t,
         ),
       };
     case "addVersion":
@@ -213,7 +213,7 @@ export default function PromptForm({
       />
       <PromptCarousel
         prompt={state}
-        onUpdateTweak={(value) =>
+        onUpdateVersion={(value) =>
           dispatch({ type: "updateVersion", payload: value })
         }
         onUpdatePrompt={(value) =>
