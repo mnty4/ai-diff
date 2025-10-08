@@ -96,7 +96,9 @@ export default function PromptCarousel({
           {/*</div>*/}
           <div
             key={prompt.id}
-            className={clsx(["embla__slide h-[60vh] flex-[0_0_50%] pr-4"])}
+            className={clsx([
+              "embla__slide h-[60vh] flex-[0_0_100%] md:flex-[0_0_50%] pr-4",
+            ])}
           >
             <PromptField
               prompt={prompt.prompt}
@@ -106,7 +108,9 @@ export default function PromptCarousel({
           {prompt.versions.map((version, index) => (
             <div
               key={version.id}
-              className={clsx(["embla__slide h-[60vh] flex-[0_0_50%] pr-4"])}
+              className={clsx([
+                "embla__slide h-[60vh] flex-[0_0_100%] md:flex-[0_0_50%] pr-4",
+              ])}
             >
               {version.status === "loading" && <PromptFieldSkeleton />}
               {version.status === "error" && (
