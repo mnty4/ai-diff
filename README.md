@@ -5,7 +5,7 @@ Provide a prompt and generate a model output, then tweak the response text until
 ### Features
 - Create prompt
 - Generate/tweak user flow
-- TODO: better support for different view ports.
+- Support for different view ports.
 - TODO: persist draft/versions to local storage & DB
 - TODO: render or prune text formatting artifacts e.g. enclosing ** to render bold is often returned in model outputs. 
 - TODO: prompts screen -> select historical prompts
