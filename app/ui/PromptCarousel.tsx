@@ -130,7 +130,7 @@ export default function PromptCarousel({
         type="button"
         className={clsx([
           "embla__prev rounded-full bg-white",
-          "absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-72",
+          "absolute top-1/2 -translate-y-1/2 left-[5vw] -translate-x-1/2",
           "hover:scale-110 transition duration-200 ease-in cursor-pointer",
           hideLeftButton ? "opacity-0 pointer-events-none" : "opacity-100",
         ])}
@@ -142,7 +142,7 @@ export default function PromptCarousel({
         type="button"
         className={clsx([
           "embla__next rounded-full bg-white",
-          "absolute top-1/2 -translate-y-1/2 right-1/2 translate-x-72",
+          "absolute top-1/2 -translate-y-1/2 right-[5vw] translate-x-1/2",
           "hover:scale-110 transition duration-200 ease-in cursor-pointer",
           hideRightButton ? "opacity-0 pointer-events-none" : "opacity-100",
         ])}
