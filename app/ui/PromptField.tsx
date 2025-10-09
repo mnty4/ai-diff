@@ -37,6 +37,7 @@ export default function PromptField({
         //   "Phasellus et est turpis. Quisque rhoncus tortor ac dui mollis facilisis. Nullam pretium, quam vel rutrum imperdiet, tortor ligula dictum diam, tempus vehicula eros magna vel felis. Ut eget dictum purus. Maecenas ullamcorper sit amet ipsum a mollis. Vivamus ut euismod sem. Nulla eget consectetur dui."
         // }
         value={prompt}
+        placeholder={"Write me a cover letter..."}
       />
     </div>
   );

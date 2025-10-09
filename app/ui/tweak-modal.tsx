@@ -1,7 +1,6 @@
 import clsx from "clsx";
 import {
   ChangeEventHandler,
-  MouseEventHandler,
   RefObject,
   useCallback,
   useEffect,
@@ -85,6 +84,7 @@ export default function TweakModal({
         onChange={onChange}
         value={value}
         onKeyDown={handleKeyDown}
+        placeholder={"Make it shorter..."}
       />
       <button
         data-testid="tweak-submit-btn"
