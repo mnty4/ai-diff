@@ -2,73 +2,26 @@
 
 import TitleField from "@/app/ui/TitleField";
 import PromptCarousel from "@/app/ui/PromptCarousel";
-import { Prompt, PromptDataAction, Version } from "@/app/lib/definitions";
+import { Prompt, promptDataReducer, Version } from "@/app/lib/definitions";
 import { useCallback, useEffect, useReducer, useState } from "react";
 import { generate } from "@/app/lib/actions";
 import TweakWrapper from "@/app/ui/tweak-wrapper";
 import clsx from "clsx";
 import { AnimatePresence } from "motion/react";
 import * as motion from "motion/react-client";
-
-function promptDataReducer(state: Prompt, action: PromptDataAction): Prompt {
-  switch (action.type) {
-    case "setTitle":
-      return { ...state, title: action.payload };
-    case "updatePrompt":
-      return { ...state, prompt: action.payload };
-    case "setVersions":
-      return { ...state, versions: action.payload };
-    case "updateVersion":
-      return {
-        ...state,
-        versions: state.versions.map((t) =>
-          t.id === action.payload.id ? { ...t, ...action.payload } : t,
-        ),
-      };
-    case "addVersion":
-      return { ...state, versions: [...state.versions, action.payload] };
-    case "removeVersion":
-      return {
-        ...state,
-        versions: state.versions.filter((t) => t.id !== action.id),
-      };
-    case "updateTweak":
-      return {
-        ...state,
-        tweak: action.payload,
-      };
-    case "branch":
-      return {
-        ...state,
-        versions: [
-          ...state.versions.filter((t, i) => i <= action.index - 1),
-          action.payload,
-        ],
-      };
-    default:
-      return state;
-  }
-}
-
-function formatTweakPrompt(prompt: string, version: string, tweak: string) {
-  return `Adjust the current version of the text based on the users tweak instruction.
-  
-This is the users original prompt: [
-  ${prompt}
-]
-This is the current version: [
-  ${version}
-]
-This is the users instruction for tweaking the current version: [
-  ${tweak}
-].`;
-}
+import { formatTweakPrompt } from "@/app/lib/utils";
 
 export default function PromptForm({
-  initialPrompt,
+  initialPrompt = {
+    id: "draft",
+    title: "New Prompt",
+    prompt: "",
+    tweak: "",
+    versions: [],
+  },
   generateAction = generate,
 }: {
-  initialPrompt: Prompt;
+  initialPrompt?: Prompt;
   generateAction?: (text: string) => Promise<string>;
 }) {
   const [state, dispatch] = useReducer(promptDataReducer, initialPrompt);
@@ -87,6 +40,7 @@ export default function PromptForm({
     debugger;
     const dummyTweak: Version = {
       id: crypto.randomUUID(),
+      text: "",
       status: "loading",
     };
     dispatch({
@@ -125,7 +79,7 @@ export default function PromptForm({
         },
       });
     }
-  }, [state.prompt]);
+  }, [generateAction, state.prompt]);
 
   useEffect(() => {
     const handleGlobalKeyDown = async (e: KeyboardEvent) => {
@@ -148,6 +102,7 @@ export default function PromptForm({
     const index = providedIndex || selectedPromptIndex;
     const dummyTweak: Version = {
       id: crypto.randomUUID(),
+      text: "",
       status: "loading",
     };
     dispatch({
