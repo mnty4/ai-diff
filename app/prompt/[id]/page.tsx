@@ -16,8 +16,6 @@ export default async function PromptPage({
       prompt: "",
       versions: [],
       tweak: "",
-      isDirty: false,
-      deletedVersionIds: [],
     };
   }
   return (

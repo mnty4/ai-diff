@@ -62,7 +62,6 @@ describe("create prompt", () => {
   it("loads a previously created prompt", () => {
     generatePrompt();
     tweakPrompt();
-    cy.wait(2000);
     cy.reload();
 
     cy.get("[data-testid='tweak-textarea']").contains("Hello world?");

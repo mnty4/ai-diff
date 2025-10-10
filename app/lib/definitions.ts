@@ -4,15 +4,12 @@ export type Prompt = {
   prompt: string;
   versions: Version[];
   tweak: string;
-  isDirty: boolean;
-  deletedVersionIds: string[];
 };
 export type Version = {
   id: string;
   text: string;
   status: "ready" | "loading" | "error";
   errorMsg?: string;
-  isDirty?: boolean;
 };
 export type PromptDTO = {
   id: string;
@@ -43,65 +40,51 @@ export function promptDataReducer(
 ): Prompt {
   switch (action.type) {
     case "setTitle":
-      return { ...state, title: action.payload, isDirty: true };
+      return { ...state, title: action.payload };
     case "updatePrompt":
-      return { ...state, prompt: action.payload, isDirty: true };
+      return { ...state, prompt: action.payload };
     case "setVersions":
       return { ...state, versions: action.payload };
     case "updateVersion":
-      console.log("update version: ", {
-        ...state,
-        versions: state.versions.map((t) =>
-          t.id === action.payload.id
-            ? { ...t, ...{ ...action.payload, isDirty: true } }
-            : t,
-        ),
-      });
+      const versions = state.versions.map((t) =>
+        t.id === action.payload.id ? { ...t, ...action.payload } : t,
+      );
+      console.log(
+        "update version: ",
+        {
+          ...state,
+          versions,
+        },
+        ...versions,
+      );
       return {
         ...state,
         versions: state.versions.map((t) =>
-          t.id === action.payload.id
-            ? { ...t, ...{ ...action.payload, isDirty: true } }
-            : t,
+          t.id === action.payload.id ? { ...t, ...action.payload } : t,
         ),
       };
     case "addVersion":
       return {
         ...state,
-        versions: [...state.versions, { ...action.payload, isDirty: true }],
+        versions: [...state.versions, action.payload],
       };
     case "removeVersion":
       return {
         ...state,
         versions: state.versions.filter((t) => t.id !== action.id),
-        deletedVersionIds: [...state.deletedVersionIds, action.id],
       };
     case "updateTweak":
       return {
         ...state,
         tweak: action.payload,
-        isDirty: true,
       };
     case "branch":
       return {
         ...state,
-        deletedVersionIds: [
-          ...state.deletedVersionIds,
-          ...state.versions
-            .filter((_, i) => i > action.index - 1)
-            .map((t) => t.id),
-        ],
         versions: [
           ...state.versions.filter((t, i) => i <= action.index - 1),
-          { ...action.payload, isDirty: true },
+          action.payload,
         ],
-      };
-    case "markSaved":
-      return {
-        ...state,
-        isDirty: false,
-        versions: state.versions.map((v) => ({ ...v, isDirty: false })),
-        deletedVersionIds: [],
       };
     default:
       return state;

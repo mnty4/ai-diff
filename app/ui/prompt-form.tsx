@@ -19,8 +19,6 @@ export default function PromptForm({
     prompt: "",
     tweak: "",
     versions: [],
-    isDirty: false,
-    deletedVersionIds: [],
   },
   generateAction = generate,
 }: {
@@ -31,40 +29,41 @@ export default function PromptForm({
   const [selectedPromptIndex, setSelectedPromptIndex] = useState<number>(0);
   const isPromptSelected = selectedPromptIndex === 0;
   const [showTweakModal, setShowTweakModal] = useState(false);
-  const lastVersionId = useRef(1);
 
   // the branch key keeps track of the most recent branch operation (delete all slides after current
   // and adds new prompt output). Necessary to refresh the hook for scrolling to end of prompt slides
   const [branchKey, setBranchKey] = useState<string>();
 
   const [isSaving, setIsSaving] = useState(false);
+  const lastVersionId = useRef(1);
 
-  const savePromptToDbDebounced = useDebouncedCallback(async () => {
-    const versionId = lastVersionId.current + 1;
-    lastVersionId.current = versionId;
-    console.log(`savePromptToDbDebounced: ${versionId}`, state);
-    await savePromptToDb(state);
-    console.log(
-      `savePromptToDbDebounced finished saving: ${lastVersionId.current} === ${versionId}`,
-      state,
-    );
-    if (lastVersionId.current === versionId) {
-      console.log(`markSaved ${lastVersionId.current}`);
-      dispatch({ type: "markSaved" });
-      setIsSaving(false);
-    }
-  }, 800);
+  const savePromptToDbDebounced = useDebouncedCallback(
+    async (versionId: number, state: Prompt) => {
+      console.log("saving: versionId =", versionId);
+      try {
+        await savePromptToDb(state);
+      } finally {
+        console.log(
+          "saved: versionId =",
+          versionId,
+          "lastVersionId.current =",
+          lastVersionId.current,
+        );
+        if (lastVersionId.current === versionId) {
+          setIsSaving(false);
+        }
+      }
+    },
+    800,
+  );
 
   useEffect(() => {
     console.log(`state useEffect triggered...`);
-    if (
-      state.isDirty ||
-      state.versions.some((v) => v.isDirty && v.status === "ready")
-    ) {
-      console.log("begin debouncing...");
-      setIsSaving(true);
-      savePromptToDbDebounced();
-    }
+    console.log("begin debouncing...");
+    setIsSaving(true);
+    const versionId = lastVersionId.current + 1;
+    lastVersionId.current = versionId;
+    savePromptToDbDebounced(versionId, { ...state });
   }, [state, savePromptToDbDebounced]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -97,7 +96,6 @@ export default function PromptForm({
     }
     try {
       const res = await generateAction(state.prompt);
-      lastVersionId.current++;
       dispatch({
         type: "updateVersion",
         payload: {
@@ -166,7 +164,6 @@ export default function PromptForm({
     try {
       const res = await generate(formatted);
       console.log(res);
-      lastVersionId.current++;
       dispatch({
         type: "updateVersion",
         payload: {

@@ -5,6 +5,7 @@ import { Prompt, PromptDTO, VersionDTO } from "@/app/lib/definitions";
 import process from "node:process";
 import postgres from "postgres";
 import { mapPromptDTOToPrompt } from "@/app/lib/mappers";
+import { id } from "ci-info";
 
 let ai: GoogleGenAI | undefined;
 
@@ -78,8 +79,7 @@ export async function savePromptToDb(prompt: Prompt) {
   try {
     const now = new Date();
     await sql.begin(async (tx) => {
-      if (prompt.isDirty) {
-        await tx`
+      await tx`
           INSERT INTO prompts (id, title, prompt, tweak, created_at, updated_at) 
           VALUES (${prompt.id}, ${prompt.title}, ${prompt.prompt}, ${prompt.tweak}, ${now}, ${now})
           ON CONFLICT (id) DO UPDATE 
@@ -87,17 +87,16 @@ export async function savePromptToDb(prompt: Prompt) {
               prompt = EXCLUDED.prompt,
               tweak = EXCLUDED.tweak,
               updated_at = EXCLUDED.updated_at`;
-      }
 
-      const versionValues = prompt.versions
-        .filter((v) => v.isDirty && v.status === "ready")
-        .map((v) => ({
-          id: v.id,
-          text: v.text,
-          prompt_id: prompt.id,
-          created_at: now,
-          updated_at: now,
-        }));
+      const versionValues = prompt.versions.map((v) => ({
+        id: v.id,
+        text: v.text,
+        prompt_id: prompt.id,
+        created_at: now,
+        updated_at: now,
+      }));
+      await tx`
+      DELETE FROM versions WHERE prompt_id=${prompt.id}`;
       if (versionValues.length > 0) {
         await tx`
           INSERT INTO versions ${sql(versionValues, "id", "prompt_id", "text", "updated_at", "created_at")}
