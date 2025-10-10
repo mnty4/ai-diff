@@ -1,15 +1,19 @@
 import PromptCarousel from "@/app/ui/PromptCarousel";
+import { Prompt } from "@/app/lib/definitions";
 
 describe("prompt-carousel", () => {
   it("render carousel slides", () => {
-    const prompt = {
+    const prompt: Prompt = {
       id: crypto.randomUUID(),
       title: "New Prompt",
       prompt: "prompt",
       versions: [
-        { id: "1", text: "Hello" },
-        { id: "2", text: "World" },
+        { id: "1", text: "Hello", status: "ready" },
+        { id: "2", text: "World", status: "ready" },
       ],
+      tweak: "",
+      deletedVersionIds: [],
+      isDirty: false,
     };
     cy.mount(<PromptCarousel prompt={prompt} />);
     cy.get(".embla__slide").should("have.length", 4);

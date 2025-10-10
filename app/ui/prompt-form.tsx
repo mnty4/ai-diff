@@ -3,21 +3,24 @@
 import TitleField from "@/app/ui/TitleField";
 import PromptCarousel from "@/app/ui/PromptCarousel";
 import { Prompt, promptDataReducer, Version } from "@/app/lib/definitions";
-import { useCallback, useEffect, useReducer, useState } from "react";
-import { generate } from "@/app/lib/actions";
+import { useCallback, useEffect, useReducer, useRef, useState } from "react";
+import { generate, savePromptToDb } from "@/app/lib/actions";
 import TweakWrapper from "@/app/ui/tweak-wrapper";
 import clsx from "clsx";
 import { AnimatePresence } from "motion/react";
 import * as motion from "motion/react-client";
 import { formatTweakPrompt } from "@/app/lib/utils";
+import { useDebouncedCallback } from "use-debounce";
 
 export default function PromptForm({
   initialPrompt = {
-    id: "draft",
+    id: crypto.randomUUID(),
     title: "New Prompt",
     prompt: "",
     tweak: "",
     versions: [],
+    isDirty: false,
+    deletedVersionIds: [],
   },
   generateAction = generate,
 }: {
@@ -28,16 +31,47 @@ export default function PromptForm({
   const [selectedPromptIndex, setSelectedPromptIndex] = useState<number>(0);
   const isPromptSelected = selectedPromptIndex === 0;
   const [showTweakModal, setShowTweakModal] = useState(false);
+  const lastVersionId = useRef(1);
 
   // the branch key keeps track of the most recent branch operation (delete all slides after current
   // and adds new prompt output). Necessary to refresh the hook for scrolling to end of prompt slides
   const [branchKey, setBranchKey] = useState<string>();
+
+  const [isSaving, setIsSaving] = useState(false);
+
+  const savePromptToDbDebounced = useDebouncedCallback(async () => {
+    const versionId = lastVersionId.current + 1;
+    lastVersionId.current = versionId;
+    console.log(`savePromptToDbDebounced: ${versionId}`, state);
+    await savePromptToDb(state);
+    console.log(
+      `savePromptToDbDebounced finished saving: ${lastVersionId.current} === ${versionId}`,
+      state,
+    );
+    if (lastVersionId.current === versionId) {
+      console.log(`markSaved ${lastVersionId.current}`);
+      dispatch({ type: "markSaved" });
+      setIsSaving(false);
+    }
+  }, 800);
+
+  useEffect(() => {
+    console.log(`state useEffect triggered...`);
+    if (
+      state.isDirty ||
+      state.versions.some((v) => v.isDirty && v.status === "ready")
+    ) {
+      console.log("begin debouncing...");
+      setIsSaving(true);
+      savePromptToDbDebounced();
+    }
+  }, [state, savePromptToDbDebounced]);
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
   };
 
   const handleGenerate = useCallback(async () => {
-    debugger;
     const dummyTweak: Version = {
       id: crypto.randomUUID(),
       text: "",
@@ -48,6 +82,7 @@ export default function PromptForm({
       index: 0,
       payload: dummyTweak,
     });
+    console.log("branching...");
     setBranchKey(crypto.randomUUID());
     if (!state.prompt) {
       dispatch({
@@ -62,6 +97,7 @@ export default function PromptForm({
     }
     try {
       const res = await generateAction(state.prompt);
+      lastVersionId.current++;
       dispatch({
         type: "updateVersion",
         payload: {
@@ -130,6 +166,7 @@ export default function PromptForm({
     try {
       const res = await generate(formatted);
       console.log(res);
+      lastVersionId.current++;
       dispatch({
         type: "updateVersion",
         payload: {
@@ -222,6 +259,12 @@ export default function PromptForm({
             </motion.div>
           )}
       </AnimatePresence>
+      <span
+        data-testid="prompt-saving-indicator"
+        className="text-white absolute right-0 bottom-0 py-2 px-4"
+      >
+        {isSaving ? "Saving..." : "Saved"}
+      </span>
     </form>
   );
 }

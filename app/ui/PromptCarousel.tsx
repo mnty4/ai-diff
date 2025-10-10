@@ -10,6 +10,8 @@ import { Prompt, Version } from "@/app/lib/definitions";
 import PromptFieldSkeleton from "@/app/ui/PromptFieldSkeleton";
 import TweakField from "@/app/ui/TweakField";
 import TweakFieldError from "@/app/ui/tweak-field-error";
+import * as motion from "motion/react-client";
+import { AnimatePresence } from "motion/react";
 
 export default function PromptCarousel({
   prompt,
@@ -126,30 +128,66 @@ export default function PromptCarousel({
           ))}
         </div>
       </div>
-      <button
-        type="button"
-        className={clsx([
-          "embla__prev rounded-full bg-white",
-          "absolute top-1/2 -translate-y-1/2 left-[5vw] -translate-x-1/2",
-          "hover:scale-110 transition duration-200 ease-in cursor-pointer",
-          hideLeftButton ? "opacity-0 pointer-events-none" : "opacity-100",
-        ])}
-        onClick={scrollPrev}
-      >
-        <Image src={leftArrow} alt={"Left arrow."} width={40} height={40} />
-      </button>
-      <button
-        type="button"
-        className={clsx([
-          "embla__next rounded-full bg-white",
-          "absolute top-1/2 -translate-y-1/2 right-[5vw] translate-x-1/2",
-          "hover:scale-110 transition duration-200 ease-in cursor-pointer",
-          hideRightButton ? "opacity-0 pointer-events-none" : "opacity-100",
-        ])}
-        onClick={scrollNext}
-      >
-        <Image src={rightArrow} alt={"Right arrow."} width={40} height={40} />
-      </button>
+      <AnimatePresence>
+        {!hideLeftButton && (
+          <motion.div
+            key="prev"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.3 }}
+            className={
+              "absolute top-1/2 -translate-y-1/2 left-[5vw] -translate-x-1/2"
+            }
+          >
+            <button
+              type="button"
+              data-testid="prompt-carousel-prev-btn"
+              className={clsx([
+                "embla__prev rounded-full bg-white",
+                "hover:scale-110 transition-transform duration-200 ease-in cursor-pointer",
+              ])}
+              onClick={scrollPrev}
+            >
+              <Image
+                src={leftArrow}
+                alt={"Left arrow."}
+                width={40}
+                height={40}
+              />
+            </button>
+          </motion.div>
+        )}
+        {!hideRightButton && (
+          <motion.div
+            key="next"
+            initial={{ opacity: 0, x: -20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 20 }}
+            transition={{ duration: 0.3 }}
+            className={
+              "absolute top-1/2 -translate-y-1/2 right-[5vw] translate-x-1/2"
+            }
+          >
+            <button
+              type="button"
+              data-testid="prompt-carousel-next-btn"
+              className={clsx([
+                "embla__next rounded-full bg-white",
+                "hover:scale-110 transition duration-200 ease-in cursor-pointer",
+              ])}
+              onClick={scrollNext}
+            >
+              <Image
+                src={rightArrow}
+                alt={"Right arrow."}
+                width={40}
+                height={40}
+              />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
