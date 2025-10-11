@@ -1,5 +1,4 @@
 "use server";
-import "server-only";
 import { GoogleGenAI } from "@google/genai";
 import {
   Prompt,
@@ -7,10 +6,8 @@ import {
   PromptListItem,
   VersionDTO,
 } from "@/app/lib/definitions";
-import process from "node:process";
 import postgres from "postgres";
 import { mapPromptDTOToPrompt } from "@/app/lib/mappers";
-import { id } from "ci-info";
 import { revalidatePath } from "next/cache";
 
 let ai: GoogleGenAI | undefined;

@@ -4,7 +4,7 @@ export default function Header() {
   return (
     <header>
       <span className={`${titleFont.className} text-3xl font-bold`}>
-        AI Edit...
+        Tweak.ai
       </span>
     </header>
   );

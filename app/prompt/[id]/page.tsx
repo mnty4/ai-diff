@@ -1,6 +1,6 @@
 import Header from "@/app/ui/header";
 import PromptForm from "@/app/ui/prompt-form";
-import { fetchPromptFromDB } from "@/app/lib/actions";
+import { fetchPromptFromDB, generate, savePromptToDB } from "@/app/lib/actions";
 
 export default async function PromptPage({
   params,
@@ -23,7 +23,11 @@ export default async function PromptPage({
       <div className={"flex justify-center items-center p-4"}>
         <Header />
       </div>
-      <PromptForm initialPrompt={prompt} />
+      <PromptForm
+        initialPrompt={prompt}
+        generateAction={generate}
+        savePromptToDBAction={savePromptToDB}
+      />
     </main>
   );
 }

@@ -28,6 +28,7 @@ export default function TweakField({
         }
         onChange={(e) =>
           onUpdateTweak?.({
+            ...version,
             id: version.id,
             text: e.target.value,
           })

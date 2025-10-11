@@ -4,7 +4,6 @@ import TitleField from "@/app/ui/title-field";
 import PromptCarousel from "@/app/ui/prompt-carousel";
 import { Prompt, promptDataReducer, Version } from "@/app/lib/definitions";
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
-import { generate, savePromptToDB } from "@/app/lib/actions";
 import TweakWrapper from "@/app/ui/tweak-wrapper";
 import clsx from "clsx";
 import { AnimatePresence } from "motion/react";
@@ -20,10 +19,12 @@ export default function PromptForm({
     tweak: "",
     versions: [],
   },
-  generateAction = generate,
+  generateAction,
+  savePromptToDBAction,
 }: {
   initialPrompt?: Prompt;
-  generateAction?: (text: string) => Promise<string>;
+  generateAction: (text: string) => Promise<string>;
+  savePromptToDBAction: (prompt: Prompt) => Promise<void>;
 }) {
   const [state, dispatch] = useReducer(promptDataReducer, initialPrompt);
   const [selectedPromptIndex, setSelectedPromptIndex] = useState<number>(0);
@@ -41,7 +42,7 @@ export default function PromptForm({
     async (versionId: number, state: Prompt) => {
       console.log("saving: versionId =", versionId);
       try {
-        await savePromptToDB(state);
+        await savePromptToDBAction(state);
       } finally {
         console.log(
           "saved: versionId =",
@@ -162,7 +163,7 @@ export default function PromptForm({
     const formatted = formatTweakPrompt(prompt, version, tweak);
 
     try {
-      const res = await generate(formatted);
+      const res = await generateAction(formatted);
       console.log(res);
       dispatch({
         type: "updateVersion",
