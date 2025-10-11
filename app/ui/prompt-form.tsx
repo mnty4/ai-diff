@@ -1,10 +1,10 @@
 "use client";
 
-import TitleField from "@/app/ui/TitleField";
-import PromptCarousel from "@/app/ui/PromptCarousel";
+import TitleField from "@/app/ui/title-field";
+import PromptCarousel from "@/app/ui/prompt-carousel";
 import { Prompt, promptDataReducer, Version } from "@/app/lib/definitions";
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
-import { generate, savePromptToDb } from "@/app/lib/actions";
+import { generate, savePromptToDB } from "@/app/lib/actions";
 import TweakWrapper from "@/app/ui/tweak-wrapper";
 import clsx from "clsx";
 import { AnimatePresence } from "motion/react";
@@ -41,7 +41,7 @@ export default function PromptForm({
     async (versionId: number, state: Prompt) => {
       console.log("saving: versionId =", versionId);
       try {
-        await savePromptToDb(state);
+        await savePromptToDB(state);
       } finally {
         console.log(
           "saved: versionId =",

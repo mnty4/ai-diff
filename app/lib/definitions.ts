@@ -18,6 +18,12 @@ export type PromptDTO = {
   tweak: string;
   versions: VersionDTO[];
 };
+export type PromptListItem = {
+  id: string;
+  title: string;
+  prompt: string;
+  updatedAt: Date;
+};
 export type VersionDTO = {
   id: string;
   text: string;

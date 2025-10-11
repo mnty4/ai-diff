@@ -1,0 +1,53 @@
+import Header from "@/app/ui/header";
+import { Prompt, PromptListItem } from "@/app/lib/definitions";
+import Link from "next/link";
+import { deletePromptFromDB, fetchPromptsFromDB } from "@/app/lib/actions";
+import clsx from "clsx";
+import { truncate } from "@/app/lib/utils";
+import PromptDeleteButton from "@/app/ui/prompt-delete-button";
+
+export default async function PromptListPage() {
+  const prompts: PromptListItem[] = await fetchPromptsFromDB();
+  console.log(prompts);
+  return (
+    <main className={"h-full w-full flex flex-col gap-4 items-center"}>
+      <div className={"flex justify-center items-center p-4"}>
+        <Header />
+      </div>
+      <div
+        className={
+          "flex flex-col gap-4 items-center overflow-y-scroll w-3/4 md:w-2/3 p-12"
+        }
+      >
+        {prompts
+          .sort((a, b) => {
+            if (a.updatedAt < b.updatedAt) {
+              return 1;
+            }
+            if (a.updatedAt > b.updatedAt) {
+              return -1;
+            }
+            return 0;
+          })
+          .map((prompt) => (
+            <Link
+              className={clsx([
+                "flex justify-between items-center bg-gray-900 p-4 rounded-lg w-full text-white",
+                "hover:scale-110 duration-200 ease-in-out",
+              ])}
+              href={`/prompt/${prompt.id}`}
+              key={prompt.id}
+            >
+              <div className={"flex flex-col gap-2"}>
+                <h2 className={"text-xl"}>{truncate(prompt.title, 50)}</h2>
+                <span className={"text-sm"}>
+                  {truncate(prompt.prompt, 200)}
+                </span>
+              </div>
+              <PromptDeleteButton id={prompt.id} />
+            </Link>
+          ))}
+      </div>
+    </main>
+  );
+}

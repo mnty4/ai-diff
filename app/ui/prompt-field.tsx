@@ -1,7 +1,7 @@
 import Image from "next/image";
 import editSvg from "@/public/edit-pencil.svg";
 import { Prompt } from "@/app/lib/definitions";
-import HighlightableText, { TextSelection } from "@/app/ui/HighlightableText";
+import HighlightableText, { TextSelection } from "@/app/ui/highlightable-text";
 import { useState } from "react";
 
 export default function PromptField({

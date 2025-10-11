@@ -11,7 +11,7 @@ export default function TitleField({
   title: string;
   setTitle: (title: string) => void;
 }) {
-  // const titleRef = useRef<HTMLInputElement | null>(null);
+  const titleRef = useRef<HTMLInputElement | null>(null);
   const measureTitleRef = useRef<HTMLSpanElement | null>(null);
 
   // base width for "New Prompt" to avoid initial resizing issues on refresh
@@ -55,12 +55,13 @@ export default function TitleField({
         <input
           id="title"
           value={title}
-          // ref={titleRef}
+          ref={titleRef}
           onChange={(e) => setTitle(e.target.value)}
           style={{ width: titleWidth }}
           className="text-xl font-semibold bg-transparent border-none focus:border-b"
           onKeyDown={handleKeyDown}
           maxLength={50}
+          onFocus={() => titleRef.current?.select()}
           // onKeyPress={(e) =>
           //   e.key === "Enter" && titleRef.current?.blur()
           // }

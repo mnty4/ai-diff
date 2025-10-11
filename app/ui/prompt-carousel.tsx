@@ -1,5 +1,5 @@
 import useEmblaCarousel from "embla-carousel-react";
-import PromptField from "@/app/ui/PromptField";
+import PromptField from "@/app/ui/prompt-field";
 import { useCallback, useEffect, useState } from "react";
 import leftArrow from "@/public/left-arrow.svg";
 import rightArrow from "@/public/right-arrow.svg";
@@ -7,8 +7,8 @@ import Image from "next/image";
 import clsx from "clsx";
 import { EmblaCarouselType, EmblaEventType } from "embla-carousel";
 import { Prompt, Version } from "@/app/lib/definitions";
-import PromptFieldSkeleton from "@/app/ui/PromptFieldSkeleton";
-import TweakField from "@/app/ui/TweakField";
+import PromptFieldSkeleton from "@/app/ui/prompt-field-skeleton";
+import TweakField from "@/app/ui/tweak-field";
 import TweakFieldError from "@/app/ui/tweak-field-error";
 import * as motion from "motion/react-client";
 import { AnimatePresence } from "motion/react";

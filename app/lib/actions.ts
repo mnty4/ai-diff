@@ -1,11 +1,17 @@
 "use server";
 import "server-only";
 import { GoogleGenAI } from "@google/genai";
-import { Prompt, PromptDTO, VersionDTO } from "@/app/lib/definitions";
+import {
+  Prompt,
+  PromptDTO,
+  PromptListItem,
+  VersionDTO,
+} from "@/app/lib/definitions";
 import process from "node:process";
 import postgres from "postgres";
 import { mapPromptDTOToPrompt } from "@/app/lib/mappers";
 import { id } from "ci-info";
+import { revalidatePath } from "next/cache";
 
 let ai: GoogleGenAI | undefined;
 
@@ -41,8 +47,8 @@ export async function generate(prompt: string) {
   return response.text || "";
 }
 
-export async function fetchPromptFromDb(id: string): Promise<Prompt | null> {
-  console.log("executing fetchPromptFromDb...");
+export async function fetchPromptFromDB(id: string): Promise<Prompt | null> {
+  console.log("executing fetchPromptFromDB...");
   try {
     const promptRows =
       await sql`SELECT p.title, p.prompt, p.tweak FROM prompts p WHERE p.id=${id}`;
@@ -74,7 +80,7 @@ export async function fetchPromptFromDb(id: string): Promise<Prompt | null> {
   }
 }
 
-export async function savePromptToDb(prompt: Prompt) {
+export async function savePromptToDB(prompt: Prompt) {
   console.log(prompt);
   try {
     const now = new Date();
@@ -118,4 +124,20 @@ export async function savePromptToDb(prompt: Prompt) {
   } catch (err) {
     console.error(err);
   }
+  revalidatePath("/prompt/list");
+}
+
+export async function fetchPromptsFromDB(): Promise<PromptListItem[]> {
+  const rows = await sql`SELECT id, title, prompt, updated_at FROM prompts`;
+  return rows.map((row) => ({
+    id: row.id,
+    title: row.title,
+    prompt: row.prompt,
+    updatedAt: row.updated_at,
+  }));
+}
+
+export async function deletePromptFromDB(id: string) {
+  await sql`DELETE FROM prompts WHERE id=${id}`;
+  revalidatePath("/prompt/list");
 }
