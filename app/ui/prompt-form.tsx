@@ -27,8 +27,8 @@ export default function PromptForm({
   savePromptToDBAction: (prompt: Prompt) => Promise<void>;
 }) {
   const [state, dispatch] = useReducer(promptDataReducer, initialPrompt);
-  const [selectedPromptIndex, setSelectedPromptIndex] = useState<number>(0);
-  const isPromptSelected = selectedPromptIndex === 0;
+  const [selectedSlideIndex, setSelectedSlideIndex] = useState<number>(0);
+  const isPromptSelected = selectedSlideIndex === 0;
   const [showTweakModal, setShowTweakModal] = useState(false);
 
   // the branch key keeps track of the most recent branch operation (delete all slides after current
@@ -134,7 +134,7 @@ export default function PromptForm({
   }, [handleGenerate, isPromptSelected, setShowTweakModal]);
 
   const handleTweak = async (providedIndex?: number) => {
-    const index = providedIndex || selectedPromptIndex;
+    const index = providedIndex || selectedSlideIndex;
     const dummyTweak: Version = {
       id: crypto.randomUUID(),
       text: "",
@@ -209,7 +209,7 @@ export default function PromptForm({
         onUpdatePrompt={(value) =>
           dispatch({ type: "updatePrompt", payload: value })
         }
-        onSelectSlide={(index) => setSelectedPromptIndex(index)}
+        onSelectSlide={(index) => setSelectedSlideIndex(index)}
         branchKey={branchKey}
         onRetry={(index) => handleRetry(index)}
       />
@@ -237,7 +237,7 @@ export default function PromptForm({
         )}
 
         {!isPromptSelected &&
-          state.versions[selectedPromptIndex - 1]?.status === "ready" && (
+          state.versions[selectedSlideIndex - 1]?.status === "ready" && (
             <motion.div
               key="tweak"
               initial={{ opacity: 0, y: 10 }}
