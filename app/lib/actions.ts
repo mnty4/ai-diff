@@ -12,7 +12,7 @@ import { revalidatePath } from "next/cache";
 
 let ai: GoogleGenAI | undefined;
 
-const sql = postgres(process.env.POSTGRES_URL!, { debug: true, max: 10 });
+const sql = postgres(process.env.POSTGRES_URL!, {});
 
 async function testConnection() {
   try {
