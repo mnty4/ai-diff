@@ -6,7 +6,7 @@ Provide a prompt and generate a model output, then tweak the response text until
 - Create prompt
 - Generate/tweak user flow
 - Support for different view ports.
-- persist draft/versions to local storage & DB
+- persist draft/versions to DB
 - prompts list screen -> select historical prompts
 - TODO: render or prune text formatting artifacts e.g. enclosing ** to render bold is often returned in model outputs.
 - TODO: user-defined variables for text reuse across prompts/tweaks.
@@ -16,6 +16,7 @@ Provide a prompt and generate a model output, then tweak the response text until
 
 ### TODOs
 
-- look into preloading /prompts/list
+- fix issue where it doesn't show loading.tsx after revalidating route and transitioning to static route /prompts/list. 
+- ensure page is only height of screen in small view ports
 - use pagination for /prompts/list
 - logging/metrics

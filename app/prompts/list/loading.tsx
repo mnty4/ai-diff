@@ -17,7 +17,7 @@ function PromptListItemSkeleton() {
   );
 }
 
-export default function Loading() {
+export default function PromptListLoadingSkeleton() {
   // Number of skeleton items to render
   const skeletons = Array.from({ length: 5 });
 

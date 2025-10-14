@@ -14,12 +14,17 @@ let ai: GoogleGenAI | undefined;
 
 const sql = postgres(process.env.POSTGRES_URL!, {});
 
+let firstRun = true;
 async function testConnection() {
+  if (!firstRun) {
+    return;
+  }
+  firstRun = false;
   try {
     const result = await sql`SELECT 1 as connected`;
-    console.log("✅ Database connection successful:", result[0]);
+    console.log("Database connection successful:", result[0]);
   } catch (err) {
-    console.error("❌ Database connection failed:", err);
+    console.error("Database connection failed:", err);
   }
 }
 

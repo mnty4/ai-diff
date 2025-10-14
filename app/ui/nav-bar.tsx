@@ -4,6 +4,7 @@ import clsx from "clsx";
 import createSvg from "@/public/create.svg";
 import Link from "next/link";
 import menuHamburger from "@/public/menu-hamburger.svg";
+import { useCallback } from "react";
 
 export default function NavBar({
   showNavBar,
@@ -12,6 +13,12 @@ export default function NavBar({
   showNavBar: boolean;
   setShowNavBar: (showNavBar: boolean) => void;
 }) {
+  const handleRouteClick = useCallback(() => {
+    // hide nav bar on route click if less than md viewport width.
+    if (window.innerWidth < 768) {
+      setShowNavBar(false);
+    }
+  }, [setShowNavBar]);
   return (
     <>
       <div
@@ -45,6 +52,7 @@ export default function NavBar({
               className={
                 "bg-white m-1 rounded-lg px-4 py-2 text-black flex items-center gap-2 hover:scale-110 transition duration-200 ease-in"
               }
+              onClick={handleRouteClick}
             >
               <span>Create</span>
               <Image src={createSvg} alt="Plus icon." height={24} width={24} />
@@ -52,15 +60,17 @@ export default function NavBar({
             <Link
               href="/prompts/list"
               className="p-1 hover:scale-110 transition duration-200 ease-in"
+              onClick={handleRouteClick}
             >
               Prompts
             </Link>
-            <Link
-              href="/variables"
-              className="p-1 hover:scale-110 transition duration-200 ease-in"
-            >
-              Variables
-            </Link>
+            {/*<Link*/}
+            {/*  href="/variables"*/}
+            {/*  className="p-1 hover:scale-110 transition duration-200 ease-in"*/}
+            {/*  onClick={handleRouteClick}*/}
+            {/*>*/}
+            {/*  Variables*/}
+            {/*</Link>*/}
           </div>
         </nav>
       </div>
