@@ -10,7 +10,8 @@ export default function LayoutWrapper({
 }>) {
   const [showNavBar, setShowNavBar] = useState<boolean>(false);
   return (
-    <div className="h-[100dvh] w-full flex flex-row bg-gray-700">
+    // h-screen for fallback if browser doesn't support dvh
+    <div className="h-[var(--app-height)] w-full flex flex-row bg-gray-700">
       <NavBar showNavBar={showNavBar} setShowNavBar={setShowNavBar} />
       <div
         className={clsx([
