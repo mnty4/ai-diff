@@ -12,6 +12,7 @@ describe("Prompt Form Component", () => {
         { id: "1", text: "Hello", status: "ready" },
         { id: "2", text: "World", status: "ready" },
       ],
+      isDirty: false,
     };
     cy.mount(
       <PromptForm
@@ -35,6 +36,7 @@ describe("Prompt Form Component", () => {
         { id: "1", text: "Hello", status: "ready" },
         { id: "2", text: "World", status: "ready" },
       ],
+      isDirty: false,
     };
     cy.mount(
       <PromptForm
@@ -56,6 +58,7 @@ describe("Prompt Form Component", () => {
         { id: "1", text: "Hello", status: "ready" },
         { id: "2", text: "World", status: "ready" },
       ],
+      isDirty: false,
     };
     cy.mount(
       <PromptForm

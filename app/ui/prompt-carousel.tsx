@@ -5,7 +5,6 @@ import leftArrow from "@/public/left-arrow.svg";
 import rightArrow from "@/public/right-arrow.svg";
 import Image from "next/image";
 import clsx from "clsx";
-import { EmblaCarouselType, EmblaEventType } from "embla-carousel";
 import { Prompt, Version } from "@/app/lib/definitions";
 import PromptFieldSkeleton from "@/app/ui/prompt-field-skeleton";
 import TweakField from "@/app/ui/tweak-field";

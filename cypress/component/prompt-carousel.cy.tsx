@@ -12,6 +12,7 @@ describe("prompt-carousel", () => {
         { id: "2", text: "World", status: "ready" },
       ],
       tweak: "",
+      isDirty: false,
     };
     cy.mount(<PromptCarousel prompt={prompt} />);
     cy.get(".embla__slide").should("have.length", 3);
