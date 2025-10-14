@@ -10,11 +10,11 @@ export default function LayoutWrapper({
 }>) {
   const [showNavBar, setShowNavBar] = useState<boolean>(false);
   return (
-    <div className="h-screen max-w-full flex flex-row bg-gray-700">
+    <div className="h-[100dvh] w-full flex flex-row bg-gray-700">
       <NavBar showNavBar={showNavBar} setShowNavBar={setShowNavBar} />
       <div
         className={clsx([
-          "h-screen w-full flex flex-col items-center",
+          "h-full w-full flex flex-col items-center",
           "transition-all duration-200 ease-in",
           showNavBar ? "md:pl-64" : "md:pl-0",
         ])}
