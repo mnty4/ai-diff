@@ -12,5 +12,6 @@ export function mapPromptDTOToPrompt(promptDTO: PromptDTO): Prompt {
       text: v.text,
       status: "ready",
     })),
+    isDirty: false,
   };
 }

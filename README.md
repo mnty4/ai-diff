@@ -12,10 +12,12 @@ Provide a prompt and generate a model output, then tweak the response text until
 - TODO: user-defined variables for text reuse across prompts/tweaks.
 - TODO: only apply tweak to the selected portion of text.
 - TODO: view a diff between tweaks.
+- TODO: stream response instead of all at once.
 
 ### TODOs
+
+- adjust prompts/list margin for small screen size
 - nav bar doesn't push main content if mobile (no margin in main content)
-- don't save if user creates a prompt but doesn't write anything.
 - create a skeleton for loading the prompts/list page.
 - create a skeleton for loading the prompts/id page
 - look into preloading /prompts/list

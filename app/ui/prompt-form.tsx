@@ -18,6 +18,7 @@ export default function PromptForm({
     prompt: "",
     tweak: "",
     versions: [],
+    isDirty: false,
   },
   generateAction,
   savePromptToDBAction,
@@ -36,7 +37,7 @@ export default function PromptForm({
   const [branchKey, setBranchKey] = useState<string>();
 
   const [isSaving, setIsSaving] = useState(false);
-  const lastVersionId = useRef(1);
+  const lastVersionId = useRef(0);
 
   const savePromptToDbDebounced = useDebouncedCallback(
     async (versionId: number, state: Prompt) => {
@@ -45,6 +46,7 @@ export default function PromptForm({
       } finally {
         if (lastVersionId.current === versionId) {
           setIsSaving(false);
+          dispatch({ type: "markSaved" });
         }
       }
     },
@@ -52,15 +54,13 @@ export default function PromptForm({
   );
 
   useEffect(() => {
-    setIsSaving(true);
-    const versionId = lastVersionId.current + 1;
-    lastVersionId.current = versionId;
-    savePromptToDbDebounced(versionId, { ...state });
+    if (state.isDirty) {
+      setIsSaving(true);
+      const versionId = lastVersionId.current + 1;
+      lastVersionId.current = versionId;
+      savePromptToDbDebounced(versionId, { ...state });
+    }
   }, [state, savePromptToDbDebounced]);
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-  };
 
   const handleGenerate = useCallback(async () => {
     const dummyTweak: Version = {
@@ -123,69 +123,78 @@ export default function PromptForm({
     };
   }, [handleGenerate, isPromptSelected, setShowTweakModal]);
 
-  const handleTweak = async (providedIndex?: number) => {
-    const index = providedIndex || selectedSlideIndex;
-    const dummyTweak: Version = {
-      id: crypto.randomUUID(),
-      text: "",
-      status: "loading",
-    };
-    dispatch({
-      type: "branch",
-      index: index,
-      payload: dummyTweak,
-    });
-    setBranchKey(crypto.randomUUID());
-    const version = state.versions[index - 1].text || "";
-    const tweak = state.tweak || "";
-    const prompt = state.prompt;
-    if (!version || !prompt || !tweak) {
+  const handleTweak = useCallback(
+    async (providedIndex?: number) => {
+      const index = providedIndex || selectedSlideIndex;
+      const dummyTweak: Version = {
+        id: crypto.randomUUID(),
+        text: "",
+        status: "loading",
+      };
       dispatch({
-        type: "updateVersion",
-        payload: {
-          ...dummyTweak,
-          status: "error",
-          errorMsg: "Prompt must be provided.",
-        },
+        type: "branch",
+        index: index,
+        payload: dummyTweak,
       });
-      return;
-    }
-    const formatted = formatTweakPrompt(prompt, version, tweak);
+      setBranchKey(crypto.randomUUID());
+      const version = state.versions[index - 1].text || "";
+      const tweak = state.tweak || "";
+      const prompt = state.prompt;
+      if (!version || !prompt || !tweak) {
+        dispatch({
+          type: "updateVersion",
+          payload: {
+            ...dummyTweak,
+            status: "error",
+            errorMsg: "Prompt must be provided.",
+          },
+        });
+        return;
+      }
+      const formatted = formatTweakPrompt(prompt, version, tweak);
 
-    try {
-      const res = await generateAction(formatted);
-      dispatch({
-        type: "updateVersion",
-        payload: {
-          ...dummyTweak,
-          text: res,
-          status: "ready",
-        },
-      });
-    } catch (e) {
-      dispatch({
-        type: "updateVersion",
-        payload: {
-          ...dummyTweak,
-          status: "error",
-        },
-      });
-    }
-  };
-  const handleRetry = (index: number) => {
-    console.log(index);
-    if (index === 0) {
-      handleGenerate();
-    } else {
-      handleTweak(index);
-    }
-  };
+      try {
+        const res = await generateAction(formatted);
+        dispatch({
+          type: "updateVersion",
+          payload: {
+            ...dummyTweak,
+            text: res,
+            status: "ready",
+          },
+        });
+      } catch (e) {
+        dispatch({
+          type: "updateVersion",
+          payload: {
+            ...dummyTweak,
+            status: "error",
+          },
+        });
+      }
+    },
+    [
+      generateAction,
+      selectedSlideIndex,
+      state.prompt,
+      state.tweak,
+      state.versions,
+    ],
+  );
+
+  const handleRetry = useCallback(
+    (index: number) => {
+      if (index === 0) {
+        handleGenerate();
+      } else {
+        handleTweak(index);
+      }
+    },
+    [handleGenerate, handleTweak],
+  );
 
   return (
-    <form
-      className={"flex flex-col justify-center items-center gap-4"}
-      onSubmit={handleSubmit}
-    >
+    <form className={"flex flex-col justify-center items-center gap-4"}>
       <TitleField
         title={state.title}
         setTitle={(title) => dispatch({ type: "setTitle", payload: title })}
