@@ -10,6 +10,11 @@ import { AnimatePresence } from "motion/react";
 
 export default async function PromptListPage() {
   const prompts: PromptListItem[] = await fetchPromptsFromDB();
+  await new Promise<void>((resolve) => {
+    setTimeout(() => {
+      resolve();
+    }, 6000);
+  });
   console.log(prompts);
   return (
     <main className={"h-full w-full flex flex-col gap-4 items-center"}>
@@ -44,7 +49,7 @@ export default async function PromptListPage() {
                     "flex justify-between items-center bg-gray-900 p-4 rounded-lg text-white",
                     "hover:scale-110 duration-200 ease-in-out",
                   ])}
-                  href={`/prompts/${prompt.id}`}
+                  href={`/prompts/${prompt.id}?mode=edit`}
                 >
                   <div className={"flex flex-col gap-2"}>
                     <h2 className={"text-xl"}>{truncate(prompt.title, 50)}</h2>

@@ -1,24 +1,37 @@
 import Header from "@/app/ui/header";
 import PromptForm from "@/app/ui/prompt-form";
 import { fetchPromptFromDB, generate, savePromptToDB } from "@/app/lib/actions";
+import { Prompt } from "@/app/lib/definitions";
 
 export default async function PromptPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ mode?: string }>;
 }) {
   const id = (await params).id;
-  let prompt = await fetchPromptFromDB(id);
-  if (!prompt) {
-    prompt = {
-      id,
-      title: "New Prompt",
-      prompt: "",
-      versions: [],
-      tweak: "",
-      isDirty: false,
-    };
+  const mode = (await searchParams).mode;
+  let prompt: Prompt = {
+    id,
+    title: "New Prompt",
+    prompt: "",
+    versions: [],
+    tweak: "",
+    isDirty: false,
+  };
+  if (mode === "edit") {
+    const fetchedPrompt = await fetchPromptFromDB(id);
+    if (fetchedPrompt) {
+      prompt = fetchedPrompt;
+    }
+    await new Promise<void>((resolve) => {
+      setTimeout(() => {
+        resolve();
+      }, 6000);
+    });
   }
+
   return (
     <main className={"h-full w-full flex flex-col gap-4"}>
       <div className={"flex justify-center items-center p-4"}>
