@@ -18,7 +18,7 @@ export default async function PromptListPage() {
       </div>
       <div
         className={
-          "flex flex-col gap-4 items-center overflow-y-scroll w-3/4 md:w-2/3 p-12"
+          "flex flex-col gap-4 items-center overflow-y-scroll md:w-2/3 p-8 md:p-12"
         }
       >
         <AnimatePresence>
