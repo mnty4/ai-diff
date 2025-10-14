@@ -16,7 +16,6 @@ Provide a prompt and generate a model output, then tweak the response text until
 
 ### TODOs
 
-- nav bar doesn't push main content if mobile (no margin in main content)
 - create a skeleton for loading the prompts/list page.
 - create a skeleton for loading the prompts/id page
 - look into preloading /prompts/list

@@ -16,7 +16,7 @@ export default function LayoutWrapper({
         className={clsx([
           "h-screen w-full flex flex-col items-center",
           "transition-all duration-200 ease-in",
-          showNavBar ? "pl-64" : "pl-0",
+          showNavBar ? "md:pl-64" : "md:pl-0",
         ])}
       >
         {children}
