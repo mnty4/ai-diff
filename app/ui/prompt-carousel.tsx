@@ -87,7 +87,7 @@ export default function PromptCarousel({
 
   return (
     <div className="embla relative w-full flex flex-col items-center">
-      <div className="embla__viewport w-8/10" ref={emblaRef}>
+      <div className="embla__viewport w-4/5" ref={emblaRef}>
         <div className="embla__container ml-4">
           {/*<div className="embla__slide">*/}
           {/*  <div className="w-112"></div>*/}

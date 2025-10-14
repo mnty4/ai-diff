@@ -16,8 +16,6 @@ Provide a prompt and generate a model output, then tweak the response text until
 
 ### TODOs
 
-- create a skeleton for loading the prompts/list page.
-- create a skeleton for loading the prompts/id page
 - look into preloading /prompts/list
 - use pagination for /prompts/list
 - logging/metrics

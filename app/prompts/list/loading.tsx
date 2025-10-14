@@ -9,8 +9,8 @@ function PromptListItemSkeleton() {
       layout
       transition={{ duration: 0.25 }}
     >
-      <div className="h-6 bg-gray-600 rounded w-3/4 mb-2"></div>
-      <div className="h-4 bg-gray-600 rounded w-full"></div>
+      <div className="h-7 bg-gray-600 rounded w-3/4 mb-2"></div>
+      <div className="h-5 bg-gray-600 rounded w-full"></div>
     </motion.div>
   );
 }
