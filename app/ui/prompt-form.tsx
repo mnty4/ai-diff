@@ -40,16 +40,9 @@ export default function PromptForm({
 
   const savePromptToDbDebounced = useDebouncedCallback(
     async (versionId: number, state: Prompt) => {
-      console.log("saving: versionId =", versionId);
       try {
         await savePromptToDBAction(state);
       } finally {
-        console.log(
-          "saved: versionId =",
-          versionId,
-          "lastVersionId.current =",
-          lastVersionId.current,
-        );
         if (lastVersionId.current === versionId) {
           setIsSaving(false);
         }
@@ -59,8 +52,6 @@ export default function PromptForm({
   );
 
   useEffect(() => {
-    console.log(`state useEffect triggered...`);
-    console.log("begin debouncing...");
     setIsSaving(true);
     const versionId = lastVersionId.current + 1;
     lastVersionId.current = versionId;
@@ -82,7 +73,6 @@ export default function PromptForm({
       index: 0,
       payload: dummyTweak,
     });
-    console.log("branching...");
     setBranchKey(crypto.randomUUID());
     if (!state.prompt) {
       dispatch({
@@ -164,7 +154,6 @@ export default function PromptForm({
 
     try {
       const res = await generateAction(formatted);
-      console.log(res);
       dispatch({
         type: "updateVersion",
         payload: {

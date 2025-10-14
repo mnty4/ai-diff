@@ -11,7 +11,7 @@ This is the users original prompt: [
 This is the current version: [
   ${version}
 ]
-This is the users instruction for tweaking the current version: [
+This is the users instruction for tweaking the current version of the text: [
   ${tweak}
 ].`;
 }

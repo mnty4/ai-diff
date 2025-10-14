@@ -45,7 +45,6 @@ export async function generate(prompt: string) {
 }
 
 export async function fetchPromptFromDB(id: string): Promise<Prompt | null> {
-  console.log("executing fetchPromptFromDB...");
   try {
     const promptRows =
       await sql`SELECT p.title, p.prompt, p.tweak FROM prompts p WHERE p.id=${id}`;
@@ -69,7 +68,6 @@ export async function fetchPromptFromDB(id: string): Promise<Prompt | null> {
       tweak: promptRow.tweak,
       versions: versions,
     };
-    console.log(promptDTO);
     return mapPromptDTOToPrompt(promptDTO);
   } catch (e) {
     console.error(e);
@@ -108,20 +106,11 @@ export async function savePromptToDB(prompt: Prompt) {
               updated_at = EXCLUDED.updated_at
       `;
       }
-
-      //       await tx`
-      //     INSERT INTO versions (id, prompt_id, text, updated_at)
-      //     VALUES ${sql.join(versionValues, `, `)}
-      //     ON CONFLICT (id) DO UPDATE
-      //     SET text = EXCLUDED.text,
-      //         updated_at = EXCLUDED.updated_at
-      // `;
     });
-    console.log("markSaved...");
   } catch (err) {
     console.error(err);
   }
-  revalidatePath("/prompt/list");
+  revalidatePath("/prompts/list");
 }
 
 export async function fetchPromptsFromDB(): Promise<PromptListItem[]> {
@@ -136,5 +125,5 @@ export async function fetchPromptsFromDB(): Promise<PromptListItem[]> {
 
 export async function deletePromptFromDB(id: string) {
   await sql`DELETE FROM prompts WHERE id=${id}`;
-  revalidatePath("/prompt/list");
+  revalidatePath("/prompts/list");
 }
