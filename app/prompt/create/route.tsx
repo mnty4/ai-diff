@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 
-export default function CreatePage() {
+export async function GET() {
   const id = crypto.randomUUID();
   redirect(`/prompt/${id}`);
 }
