@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
 
 export default function Root() {
-  redirect(`/prompt/create`);
+  redirect(`/prompts/create`);
 }

@@ -44,7 +44,7 @@ export default async function PromptListPage() {
                     "flex justify-between items-center bg-gray-900 p-4 rounded-lg text-white",
                     "hover:scale-110 duration-200 ease-in-out",
                   ])}
-                  href={`/prompt/${prompt.id}`}
+                  href={`/prompts/${prompt.id}`}
                 >
                   <div className={"flex flex-col gap-2"}>
                     <h2 className={"text-xl"}>{truncate(prompt.title, 50)}</h2>

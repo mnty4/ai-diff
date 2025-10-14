@@ -41,7 +41,7 @@ export default function NavBar({
           </div>
           <div className="flex flex-col items-center gap-4">
             <Link
-              href="/prompt/create"
+              href="/prompts/create"
               className={
                 "bg-white m-1 rounded-lg px-4 py-2 text-black flex items-center gap-2 hover:scale-110 transition duration-200 ease-in"
               }
@@ -50,7 +50,7 @@ export default function NavBar({
               <Image src={createSvg} alt="Plus icon." height={24} width={24} />
             </Link>
             <Link
-              href="/prompt/list"
+              href="/prompts/list"
               className="p-1 hover:scale-110 transition duration-200 ease-in"
             >
               Prompts
