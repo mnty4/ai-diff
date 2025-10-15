@@ -23,7 +23,6 @@ export type PromptListItem = {
   id: string;
   title: string;
   prompt: string;
-  updatedAt: Date;
 };
 export type VersionDTO = {
   id: string;

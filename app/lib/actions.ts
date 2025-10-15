@@ -118,13 +118,16 @@ export async function savePromptToDB(prompt: Prompt) {
   revalidatePath("/prompts/list");
 }
 
-export async function fetchPromptsFromDB(): Promise<PromptListItem[]> {
-  const rows = await sql`SELECT id, title, prompt, updated_at FROM prompts`;
+export async function fetchPromptsFromDB(
+  pageSize: number,
+  page: number = 0,
+): Promise<PromptListItem[]> {
+  const rows =
+    await sql`SELECT id, title, prompt FROM prompts ORDER BY updated_at LIMIT ${pageSize} OFFSET ${page * pageSize}`;
   return rows.map((row) => ({
     id: row.id,
     title: row.title,
     prompt: row.prompt,
-    updatedAt: row.updated_at,
   }));
 }
 

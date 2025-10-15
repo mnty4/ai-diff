@@ -4,13 +4,6 @@ import { fetchPromptsFromDB } from "@/app/lib/actions";
 import PromptList from "@/app/ui/prompt-list";
 
 export default async function PromptListPage() {
-  const prompts: PromptListItem[] = await fetchPromptsFromDB();
-  await new Promise<void>((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, 6000);
-  });
-  console.log(prompts);
   return (
     <main className={"h-full w-full flex flex-col gap-4 items-center"}>
       <div className={"flex justify-center items-center p-4"}>
@@ -21,7 +14,7 @@ export default async function PromptListPage() {
           "flex flex-col gap-4 items-center overflow-y-scroll md:w-2/3 p-8 md:p-12"
         }
       >
-        <PromptList prompts={prompts} />
+        <PromptList />
       </div>
     </main>
   );
