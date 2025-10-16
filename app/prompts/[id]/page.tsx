@@ -1,7 +1,8 @@
 import Header from "@/app/ui/header";
 import PromptForm from "@/app/ui/prompt-form";
-import { fetchPromptFromDB, generate, savePromptToDB } from "@/app/lib/actions";
+import { generate, savePromptToDB } from "@/app/lib/actions";
 import { Prompt } from "@/app/lib/definitions";
+import { fetchPromptFromDB } from "@/app/lib/data";
 
 export default async function PromptPage({
   params,

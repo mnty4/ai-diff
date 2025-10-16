@@ -8,7 +8,8 @@ import {
 } from "@/app/lib/definitions";
 import postgres from "postgres";
 import { mapPromptDTOToPrompt } from "@/app/lib/mappers";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
+import { cache } from "react";
 
 let ai: GoogleGenAI | undefined;
 
@@ -49,37 +50,6 @@ export async function generate(prompt: string) {
   return response.text || "";
 }
 
-export async function fetchPromptFromDB(id: string): Promise<Prompt | null> {
-  try {
-    const promptRows =
-      await sql`SELECT p.title, p.prompt, p.tweak FROM prompts p WHERE p.id=${id}`;
-
-    if (promptRows.length === 0) {
-      return null;
-    }
-    const promptRow = promptRows[0];
-    const versionRows =
-      await sql`SELECT v.id, v.text FROM versions v WHERE v.prompt_id=${id}`;
-
-    const versions: VersionDTO[] = versionRows.map((v) => ({
-      id: v.id,
-      text: v.text,
-    }));
-
-    const promptDTO: PromptDTO = {
-      id,
-      title: promptRow.title,
-      prompt: promptRow.prompt,
-      tweak: promptRow.tweak,
-      versions: versions,
-    };
-    return mapPromptDTOToPrompt(promptDTO);
-  } catch (e) {
-    console.error(e);
-    return null;
-  }
-}
-
 export async function savePromptToDB(prompt: Prompt) {
   console.log(prompt);
   try {
@@ -115,20 +85,13 @@ export async function savePromptToDB(prompt: Prompt) {
   } catch (err) {
     console.error(err);
   }
-  revalidatePath("/prompts/list");
-}
-
-export async function fetchPromptsFromDB(): Promise<PromptListItem[]> {
-  const rows = await sql`SELECT id, title, prompt, updated_at FROM prompts`;
-  return rows.map((row) => ({
-    id: row.id,
-    title: row.title,
-    prompt: row.prompt,
-    updatedAt: row.updated_at,
-  }));
+  // revalidatePath("/prompts/list");
+  revalidateTag("prompts");
+  console.log("revalidate");
 }
 
 export async function deletePromptFromDB(id: string) {
   await sql`DELETE FROM prompts WHERE id=${id}`;
   revalidatePath("/prompts/list");
+  console.log("revalidate");
 }

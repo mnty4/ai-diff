@@ -1,7 +1,6 @@
 import Header from "@/app/ui/header";
 import { PromptListItem } from "@/app/lib/definitions";
 import Link from "next/link";
-import { fetchPromptsFromDB } from "@/app/lib/actions";
 import clsx from "clsx";
 import { truncate } from "@/app/lib/utils";
 import PromptDeleteButton from "@/app/ui/prompt-delete-button";
