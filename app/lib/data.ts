@@ -16,12 +16,12 @@ export const fetchPromptsFromDB = async (): Promise<PromptListItem[]> => {
       resolve();
     }, 2000);
   });
-  const rows = await sql`SELECT id, title, prompt, updated_at FROM prompts`;
+  const rows =
+    await sql`SELECT id, title, prompt FROM prompts ORDER BY updated_at DESC`;
   return rows.map((row) => ({
     id: row.id,
     title: row.title,
     prompt: row.prompt,
-    updatedAt: row.updated_at,
   }));
 };
 
