@@ -3,15 +3,11 @@ import { PromptListItem } from "@/app/lib/definitions";
 import { fetchPromptsFromDB } from "@/app/lib/data";
 import PromptList from "@/app/ui/prompt-list";
 
+export const dynamic = "force-dynamic";
+
 export default async function PromptListPage() {
   const prompts: PromptListItem[] = await fetchPromptsFromDB();
   console.log(prompts);
-  // await new Promise<void>((resolve) => {
-  //   setTimeout(() => {
-  //     resolve();
-  //   }, 6000);
-  // });
-  // console.log(prompts);
   return (
     <main className={"h-full w-full flex flex-col gap-4 items-center"}>
       <div className={"flex justify-center items-center p-4"}>

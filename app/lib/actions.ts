@@ -85,8 +85,7 @@ export async function savePromptToDB(prompt: Prompt) {
   } catch (err) {
     console.error(err);
   }
-  // revalidatePath("/prompts/list");
-  revalidateTag("prompts");
+  revalidatePath("/prompts/list");
   console.log("revalidate");
 }
 

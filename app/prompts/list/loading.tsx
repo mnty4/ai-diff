@@ -19,17 +19,15 @@ function PromptListItemSkeleton() {
 
 export default function PromptListLoadingSkeleton() {
   // Number of skeleton items to render
-  const skeletons = Array.from({ length: 5 });
+  const skeletons = Array.from({ length: 6 });
 
   return (
     <main className="h-full w-full flex flex-col gap-4 items-center">
-      {/* Header */}
       <div className="flex justify-center items-center p-4">
         <Header />
       </div>
 
-      {/* Skeleton list */}
-      <div className="flex flex-col gap-4 items-center overflow-y-scroll md:w-2/3 p-8 md:p-12">
+      <div className="flex flex-col gap-4 items-center overflow-y-scroll w-full md:w-2/3 p-8 md:p-12">
         <AnimatePresence>
           {skeletons.map((_, i) => (
             <PromptListItemSkeleton key={i} />
