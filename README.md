@@ -16,5 +16,4 @@ Provide a prompt and generate a model output, then tweak the response text until
 
 ### TODOs
  
-- use pagination for /prompts/list
 - logging/metrics

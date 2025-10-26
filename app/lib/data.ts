@@ -9,15 +9,20 @@ import { mapPromptDTOToPrompt } from "@/app/lib/mappers";
 
 const sql = postgres(process.env.POSTGRES_URL!, {});
 
-export const fetchPromptsFromDB = async (): Promise<PromptListItem[]> => {
+export const fetchPromptsFromDB = async (
+  page: number = 0,
+  pageSize: number = 15,
+): Promise<PromptListItem[]> => {
   console.log("Fetching prompts");
   await new Promise<void>((resolve) => {
     setTimeout(() => {
       resolve();
-    }, 2000);
+    }, 1000);
   });
   const rows =
-    await sql`SELECT id, title, prompt FROM prompts ORDER BY updated_at DESC`;
+    await sql`SELECT id, title, prompt FROM prompts ORDER BY updated_at DESC LIMIT ${pageSize} OFFSET ${page * pageSize};`;
+
+  console.log(page, pageSize, rows);
   return rows.map((row) => ({
     id: row.id,
     title: row.title,
