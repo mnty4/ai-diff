@@ -15,8 +15,6 @@ Provide a prompt and generate a model output, then tweak the response text until
 - TODO: stream response instead of all at once.
 
 ### TODOs
-
-- fix issue where it doesn't show loading.tsx after revalidating route and transitioning to static route /prompts/list. 
-- ensure page is only height of screen in small view ports
+ 
 - use pagination for /prompts/list
 - logging/metrics
