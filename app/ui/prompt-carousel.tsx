@@ -1,6 +1,6 @@
 import useEmblaCarousel from "embla-carousel-react";
 import PromptField from "@/app/ui/prompt-field";
-import { useCallback, useEffect, useState } from "react";
+import { RefObject, useCallback, useEffect, useRef, useState } from "react";
 import leftArrow from "@/public/left-arrow.svg";
 import rightArrow from "@/public/right-arrow.svg";
 import Image from "next/image";
@@ -11,6 +11,7 @@ import TweakField from "@/app/ui/tweak-field";
 import TweakFieldError from "@/app/ui/tweak-field-error";
 import * as motion from "motion/react-client";
 import { AnimatePresence } from "motion/react";
+import PromptEditor from "@/app/ui/prompt-editor";
 
 export default function PromptCarousel({
   prompt,
@@ -27,9 +28,16 @@ export default function PromptCarousel({
   branchKey?: string;
   onRetry?: (index: number) => void;
 }) {
+  const slideRef = useRef<HTMLDivElement>(null);
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "center",
     containScroll: false,
+    watchDrag: (_, e) => {
+      const editorRoot = slideRef.current?.querySelector(
+        '[data-slate-editor="true"]',
+      );
+      return !(editorRoot && editorRoot.contains(e.target as Element));
+    },
   });
   const [hideLeftButton, setHideLeftButton] = useState(true);
   const [hideRightButton, setHideRightButton] = useState(true);
@@ -42,15 +50,6 @@ export default function PromptCarousel({
     if (emblaApi) emblaApi.scrollNext();
   }, [emblaApi]);
 
-  // const handleSlidesInView = useCallback(
-  //   (emblaApi: EmblaCarouselType, eventName: EmblaEventType) => {
-  //     if (emblaApi) {
-  //       setHideLeftButton(!emblaApi.canScrollPrev());
-  //       setHideRightButton(!emblaApi.canScrollNext());
-  //     }
-  //   },
-  //   [],
-  // );
   const handleSelect = useCallback(() => {
     if (emblaApi) {
       // console.log(emblaApi.selectedScrollSnap());
@@ -63,10 +62,6 @@ export default function PromptCarousel({
 
   useEffect(() => {
     if (emblaApi) {
-      // console.log(emblaApi.scrollProgress());
-      // console.log(emblaApi.slideNodes()); // Access API
-
-      // emblaApi.on("slidesInView", handleSlidesInView);
       emblaApi.on("reInit", handleSelect).on("select", handleSelect);
     }
   }, [emblaApi, handleSelect]);
@@ -89,19 +84,21 @@ export default function PromptCarousel({
     <div className="embla relative w-full flex flex-col items-center">
       <div className="embla__viewport w-4/5" ref={emblaRef}>
         <div className="embla__container ml-4">
-          {/*<div className="embla__slide">*/}
-          {/*  <div className="w-112"></div>*/}
-          {/*</div>*/}
           <div
+            ref={slideRef}
             key={prompt.id}
             className={clsx([
               "embla__slide h-[60vh] flex-[0_0_100%] md:flex-[0_0_50%] pr-4",
             ])}
           >
-            <PromptField
+            <PromptEditor
               prompt={prompt.prompt}
               onUpdatePrompt={onUpdatePrompt}
             />
+            {/*<PromptField*/}
+            {/*  prompt={prompt.prompt}*/}
+            {/*  onUpdatePrompt={onUpdatePrompt}*/}
+            {/*/>*/}
           </div>
           {prompt.versions.map((version, index) => (
             <div
