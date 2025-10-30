@@ -5,6 +5,9 @@ import { createEditor, Editor, Element, Range, Transforms } from "slate";
 import { BaseEditor } from "slate";
 import { ReactEditor } from "slate-react";
 
+import lineIcon from "@/public/icons/line.svg";
+import Image from "next/image";
+
 type ParagraphElement = { type: "paragraph"; children: CustomText[] };
 type SelectionElement = { type: "selection"; children: CustomText[] };
 type CustomText = { text: string };
@@ -43,10 +46,34 @@ export default function PromptEditor({
       switch (element.type) {
         case "selection":
           console.log("selection", attributes);
-          return <span {...attributes}>|{children}|</span>;
+          return (
+            <span className={"relative"}>
+              {/*<div*/}
+              {/*  className="inline-block align-middle h-5.5 w-1 mb-0.5 bg-purple-500 rounded-full cursor-ew-resize"*/}
+              {/*  draggable*/}
+              {/*  onDrag={() => {}}*/}
+              {/*  // Set the handle height relative to the font size for visual consistency:*/}
+              {/*/>*/}
+              <div
+                className="opacity-75 absolute h-7 left-0 top-1/2 -translate-x-1 -translate-y-1/2 w-1 bg-purple-500 rounded-full cursor-ew-resize"
+                draggable
+              />
+              <span {...attributes} className="bg-purple-800">
+                {children}
+              </span>
+              {/*<div*/}
+              {/*  className="inline-block align-middle h-5.5 w-1 mb-0.5 bg-purple-500 rounded-full cursor-ew-resize"*/}
+              {/*  draggable*/}
+              {/*/>*/}
+              <div
+                className="opacity-75 absolute h-7 right-0 top-1/2 translate-x-1 -translate-y-1/2 w-1 bg-purple-500 rounded-full cursor-ew-resize"
+                draggable
+              />
+            </span>
+          );
         default:
           console.log(attributes);
-          return <p {...attributes}>{children}</p>;
+          return <span {...attributes}>{children}</span>;
       }
     },
     [],
