@@ -4,6 +4,7 @@ import { createEditor, Editor, Element, Range, Transforms } from "slate";
 
 import { BaseEditor } from "slate";
 import { ReactEditor } from "slate-react";
+import { Prompt, Version } from "@/app/lib/definitions";
 
 type ParagraphElement = { type: "paragraph"; children: CustomText[] };
 type SelectionElement = { type: "selection"; children: CustomText[] };
@@ -17,24 +18,24 @@ declare module "slate" {
   }
 }
 
-export default function PromptEditor({
-  prompt,
-  onUpdatePrompt,
+export default function VersionEditor({
+  version,
+  onUpdateVersion,
 }: {
-  prompt: string;
-  onUpdatePrompt?: (value: string) => void;
+  version: Version;
+  onUpdateVersion?: (value: Version) => void;
 }) {
   const initialValue: ParagraphElement[] = [
     {
       type: "paragraph",
-      children: [{ text: prompt }],
+      children: [{ text: version.text }],
     },
   ];
   const [editor] = useState(
     () => withInlines(withReact(createEditor())) as Editor,
   );
   const selectionNode: SelectionElement = {
-    type: "selection", // Type assertion needed here
+    type: "selection",
     children: [{ text: "" }],
   };
 
@@ -60,14 +61,20 @@ export default function PromptEditor({
         <Editable
           renderElement={renderElement}
           onSelect={(e) => {
+            console.log("selected", editor.selection);
             if (editor.selection && !Range.isCollapsed(editor.selection)) {
               Transforms.unwrapNodes(editor, {
                 match: (n) => Element.isElement(n) && n.type === "selection",
                 at: [],
-                split: true,
+                split: false,
               });
               Transforms.wrapNodes(editor, selectionNode, {
                 split: true,
+              });
+              console.log("here", onUpdateVersion);
+              onUpdateVersion?.({
+                ...version,
+                selection: selectionNode.children[0].text,
               });
             }
           }}

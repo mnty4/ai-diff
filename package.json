@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "eslint",
     "debug": "NODE_OPTIONS='--inspect' next dev",
-    "cypress:open": "cypress open"
+    "cypress:open": "cypress open",
+    "test": "vitest",
+    "coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@google/genai": "^1.21.0",
@@ -17,6 +19,7 @@
     "embla-carousel": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
     "html-to-text": "^9.0.5",
+    "lodash": "^4.17.21",
     "lucide-react": "^0.545.0",
     "marked": "^16.3.0",
     "motion": "^12.23.22",
@@ -32,15 +35,22 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@types/lodash": "^4.17.20",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^5.1.0",
+    "@vitest/browser-playwright": "^4.0.6",
     "cypress": "^15.3.0",
     "eslint": "^9",
     "eslint-config-next": "15.5.3",
     "eslint-config-prettier": "^10.1.8",
+    "happy-dom": "^20.0.10",
     "prettier": "3.6.2",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^4.0.6",
+    "vitest-browser-react": "^2.0.2"
   }
 }

@@ -10,6 +10,7 @@ export type Version = {
   id: string;
   text: string;
   status: "ready" | "loading" | "error";
+  selection?: string;
   errorMsg?: string;
 };
 export type PromptDTO = {

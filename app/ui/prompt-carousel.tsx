@@ -11,7 +11,7 @@ import TweakField from "@/app/ui/tweak-field";
 import TweakFieldError from "@/app/ui/tweak-field-error";
 import * as motion from "motion/react-client";
 import { AnimatePresence } from "motion/react";
-import PromptEditor from "@/app/ui/prompt-editor";
+import VersionEditor from "@/app/ui/version-editor";
 
 export default function PromptCarousel({
   prompt,
@@ -91,14 +91,10 @@ export default function PromptCarousel({
               "embla__slide h-[60vh] flex-[0_0_100%] md:flex-[0_0_50%] pr-4",
             ])}
           >
-            <PromptEditor
+            <PromptField
               prompt={prompt.prompt}
               onUpdatePrompt={onUpdatePrompt}
             />
-            {/*<PromptField*/}
-            {/*  prompt={prompt.prompt}*/}
-            {/*  onUpdatePrompt={onUpdatePrompt}*/}
-            {/*/>*/}
           </div>
           {prompt.versions.map((version, index) => (
             <div
@@ -115,7 +111,11 @@ export default function PromptCarousel({
                 />
               )}
               {version.status === "ready" && (
-                <TweakField version={version} onUpdateTweak={onUpdateVersion} />
+                // <TweakField version={version} onUpdateTweak={onUpdateVersion} />
+                <VersionEditor
+                  version={version}
+                  onUpdateVersion={onUpdateVersion}
+                />
               )}
             </div>
           ))}
