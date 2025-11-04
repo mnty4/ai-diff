@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import { Editable, RenderElementProps, Slate, withReact } from "slate-react";
-import { createEditor, Editor, Element, Range, Transforms } from "slate";
+import { createEditor, Editor, Element, Range, Transforms, Node } from "slate";
 
 import { BaseEditor } from "slate";
 import { ReactEditor } from "slate-react";
@@ -57,7 +57,17 @@ export default function VersionEditor({
   );
   return (
     <div className="bg-gray-900 rounded-xl p-4 w-full h-full">
-      <Slate editor={editor} initialValue={initialValue}>
+      <Slate
+        editor={editor}
+        initialValue={initialValue}
+        onValueChange={(nodes) => {
+          const newVersion = {
+            ...version,
+            text: nodes.map((node) => Node.string(node)).join("\n"),
+          };
+          onUpdateVersion?.(newVersion);
+        }}
+      >
         <Editable
           data-testid="version-editor"
           renderElement={renderElement}
