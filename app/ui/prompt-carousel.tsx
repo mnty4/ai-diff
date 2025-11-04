@@ -1,13 +1,19 @@
 import useEmblaCarousel from "embla-carousel-react";
 import PromptField from "@/app/ui/prompt-field";
-import { RefObject, useCallback, useEffect, useRef, useState } from "react";
+import {
+  Ref,
+  RefObject,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import leftArrow from "@/public/left-arrow.svg";
 import rightArrow from "@/public/right-arrow.svg";
 import Image from "next/image";
 import clsx from "clsx";
 import { Prompt, Version } from "@/app/lib/definitions";
 import PromptFieldSkeleton from "@/app/ui/prompt-field-skeleton";
-import TweakField from "@/app/ui/tweak-field";
 import TweakFieldError from "@/app/ui/tweak-field-error";
 import * as motion from "motion/react-client";
 import { AnimatePresence } from "motion/react";
@@ -28,15 +34,18 @@ export default function PromptCarousel({
   branchKey?: string;
   onRetry?: (index: number) => void;
 }) {
-  const slideRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [emblaRef, emblaApi] = useEmblaCarousel({
     align: "center",
     containScroll: false,
     watchDrag: (_, e) => {
-      const editorRoot = slideRef.current?.querySelector(
+      const slides = containerRef.current?.querySelectorAll(
         '[data-slate-editor="true"]',
       );
-      return !(editorRoot && editorRoot.contains(e.target as Element));
+      const insideEditor = slides
+        ? Array.from(slides).some((ed) => ed.contains(e.target as Element))
+        : false;
+      return !insideEditor;
     },
   });
   const [hideLeftButton, setHideLeftButton] = useState(true);
@@ -83,9 +92,8 @@ export default function PromptCarousel({
   return (
     <div className="embla relative w-full flex flex-col items-center">
       <div className="embla__viewport w-4/5" ref={emblaRef}>
-        <div className="embla__container ml-4">
+        <div className="embla__container ml-4" ref={containerRef}>
           <div
-            ref={slideRef}
             key={prompt.id}
             className={clsx([
               "embla__slide h-[60vh] flex-[0_0_100%] md:flex-[0_0_50%] pr-4",

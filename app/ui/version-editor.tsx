@@ -59,6 +59,7 @@ export default function VersionEditor({
     <div className="bg-gray-900 rounded-xl p-4 w-full h-full">
       <Slate editor={editor} initialValue={initialValue}>
         <Editable
+          data-testid="version-editor"
           renderElement={renderElement}
           onSelect={(e) => {
             console.log("selected", editor.selection);
@@ -72,9 +73,10 @@ export default function VersionEditor({
                 split: true,
               });
               console.log("here", onUpdateVersion);
+              const selectedText = Editor.string(editor, editor.selection);
               onUpdateVersion?.({
                 ...version,
-                selection: selectionNode.children[0].text,
+                selection: selectedText,
               });
             }
           }}
