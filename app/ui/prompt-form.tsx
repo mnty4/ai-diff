@@ -8,7 +8,7 @@ import TweakWrapper from "@/app/ui/tweak-wrapper";
 import clsx from "clsx";
 import { AnimatePresence } from "motion/react";
 import * as motion from "motion/react-client";
-import { formatTweakPrompt } from "@/app/lib/utils";
+import { formatTweakPrompt, formatTweakSelection } from "@/app/lib/utils";
 import { useDebouncedCallback } from "use-debounce";
 
 export default function PromptForm({
@@ -140,7 +140,7 @@ export default function PromptForm({
         payload: dummyTweak,
       });
       setBranchKey(crypto.randomUUID());
-      const version = state.versions[index - 1].text || "";
+      const version = state.versions[index - 1];
       const tweak = state.tweak || "";
       const prompt = state.prompt;
       if (!version || !prompt || !tweak) {
@@ -155,7 +155,17 @@ export default function PromptForm({
         });
         return;
       }
-      const formatted = formatTweakPrompt(prompt, version, tweak);
+      let formatted: string;
+      if (version.selectionActive && version.selection) {
+        formatted = formatTweakSelection(
+          prompt,
+          version.text,
+          version.selection,
+          tweak,
+        );
+      } else {
+        formatted = formatTweakPrompt(prompt, version.text, tweak);
+      }
 
       try {
         const res = await generateAction(formatted);

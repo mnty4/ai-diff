@@ -84,10 +84,12 @@ export default function VersionEditor({
       return;
     }
     const selectedText = selectText();
-    onUpdateVersion?.(version.id, {
-      ...version,
-      selection: selectedText,
-    });
+    if (selectedText) {
+      onUpdateVersion?.(version.id, {
+        ...version,
+        selection: selectedText,
+      });
+    }
   }, [onUpdateVersion, selectText, version]);
 
   const toggleSelectionActive = useCallback(() => {
@@ -112,11 +114,10 @@ export default function VersionEditor({
         editor={editor}
         initialValue={initialValue}
         onValueChange={(nodes) => {
-          const newVersion = {
-            ...version,
+          onUpdateVersion?.(version.id, (prev) => ({
+            ...prev,
             text: nodes.map((node) => Node.string(node)).join("\n"),
-          };
-          onUpdateVersion?.(version.id, newVersion);
+          }));
         }}
       >
         <Toolbar>
