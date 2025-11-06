@@ -77,6 +77,7 @@ export default function PromptForm({
     if (!state.prompt) {
       dispatch({
         type: "updateVersion",
+        id: dummyTweak.id,
         payload: {
           ...dummyTweak,
           status: "error",
@@ -89,6 +90,7 @@ export default function PromptForm({
       const res = await generateAction(state.prompt);
       dispatch({
         type: "updateVersion",
+        id: dummyTweak.id,
         payload: {
           ...dummyTweak,
           text: res,
@@ -98,6 +100,7 @@ export default function PromptForm({
     } catch (e) {
       dispatch({
         type: "updateVersion",
+        id: dummyTweak.id,
         payload: {
           ...dummyTweak,
           status: "error",
@@ -143,6 +146,7 @@ export default function PromptForm({
       if (!version || !prompt || !tweak) {
         dispatch({
           type: "updateVersion",
+          id: dummyTweak.id,
           payload: {
             ...dummyTweak,
             status: "error",
@@ -157,6 +161,7 @@ export default function PromptForm({
         const res = await generateAction(formatted);
         dispatch({
           type: "updateVersion",
+          id: dummyTweak.id,
           payload: {
             ...dummyTweak,
             text: res,
@@ -166,6 +171,7 @@ export default function PromptForm({
       } catch (e) {
         dispatch({
           type: "updateVersion",
+          id: dummyTweak.id,
           payload: {
             ...dummyTweak,
             status: "error",
@@ -201,8 +207,8 @@ export default function PromptForm({
       />
       <PromptCarousel
         prompt={state}
-        onUpdateVersion={(value) =>
-          dispatch({ type: "updateVersion", payload: value })
+        onUpdateVersion={(id, value) =>
+          dispatch({ type: "updateVersion", id, payload: value })
         }
         onUpdatePrompt={(value) =>
           dispatch({ type: "updatePrompt", payload: value })

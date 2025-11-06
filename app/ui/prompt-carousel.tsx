@@ -29,7 +29,10 @@ export default function PromptCarousel({
 }: {
   prompt: Prompt;
   onUpdatePrompt?: (prompt: string) => void;
-  onUpdateVersion?: (value: Version) => void;
+  onUpdateVersion?: (
+    id: string,
+    payload: Version | ((prev: Version) => Version),
+  ) => void;
   onSelectSlide?: (index: number) => void;
   branchKey?: string;
   onRetry?: (index: number) => void;

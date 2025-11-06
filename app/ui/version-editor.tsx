@@ -4,7 +4,9 @@ import { createEditor, Editor, Element, Range, Transforms, Node } from "slate";
 
 import { BaseEditor } from "slate";
 import { ReactEditor } from "slate-react";
-import { Prompt, Version } from "@/app/lib/definitions";
+import { Version } from "@/app/lib/definitions";
+import Toolbar from "@/app/ui/Toolbar";
+import clsx from "clsx";
 
 type ParagraphElement = { type: "paragraph"; children: CustomText[] };
 type SelectionElement = { type: "selection"; children: CustomText[] };
@@ -23,7 +25,10 @@ export default function VersionEditor({
   onUpdateVersion,
 }: {
   version: Version;
-  onUpdateVersion?: (value: Version) => void;
+  onUpdateVersion?: (
+    id: string,
+    payload: Version | ((prev: Version) => Version),
+  ) => void;
 }) {
   const initialValue: ParagraphElement[] = [
     {
@@ -34,10 +39,6 @@ export default function VersionEditor({
   const [editor] = useState(
     () => withInlines(withReact(createEditor())) as Editor,
   );
-  const selectionNode: SelectionElement = {
-    type: "selection",
-    children: [{ text: "" }],
-  };
 
   const renderElement = useCallback(
     ({ attributes, children, element }: RenderElementProps) => {
@@ -55,8 +56,58 @@ export default function VersionEditor({
     },
     [],
   );
+
+  const selectText = useCallback(() => {
+    if (editor.selection && !Range.isCollapsed(editor.selection)) {
+      Transforms.unwrapNodes(editor, {
+        match: (n) => Element.isElement(n) && n.type === "selection",
+        at: [],
+        split: false,
+      });
+      Transforms.wrapNodes(
+        editor,
+        {
+          type: "selection",
+          children: [{ text: "" }],
+        },
+        {
+          split: true,
+        },
+      );
+      return Editor.string(editor, editor.selection);
+    }
+    return "";
+  }, [editor]);
+
+  const handleSelection = useCallback(() => {
+    if (!version.selectionActive) {
+      return;
+    }
+    const selectedText = selectText();
+    onUpdateVersion?.(version.id, {
+      ...version,
+      selection: selectedText,
+    });
+  }, [onUpdateVersion, selectText, version]);
+
+  const toggleSelectionActive = useCallback(() => {
+    onUpdateVersion?.(version.id, (prev) => {
+      if (prev.selectionActive) {
+        Transforms.unwrapNodes(editor, {
+          match: (n) => Element.isElement(n) && n.type === "selection",
+          at: [],
+          split: false,
+        });
+        return { ...prev, selectionActive: false };
+      } else {
+        const selectedText = selectText();
+        return { ...prev, selection: selectedText, selectionActive: true };
+      }
+    });
+  }, [editor, onUpdateVersion, selectText, version.id]);
+
   return (
-    <div className="bg-gray-900 rounded-xl p-4 w-full h-full">
+    <div className="bg-gray-900 rounded-xl w-full h-full">
       <Slate
         editor={editor}
         initialValue={initialValue}
@@ -65,32 +116,20 @@ export default function VersionEditor({
             ...version,
             text: nodes.map((node) => Node.string(node)).join("\n"),
           };
-          onUpdateVersion?.(newVersion);
+          onUpdateVersion?.(version.id, newVersion);
         }}
       >
+        <Toolbar>
+          <SelectButton
+            active={version.selectionActive}
+            onToggleSelectionActive={toggleSelectionActive}
+          />
+        </Toolbar>
         <Editable
           data-testid="version-editor"
           renderElement={renderElement}
-          onSelect={(e) => {
-            console.log("selected", editor.selection);
-            if (editor.selection && !Range.isCollapsed(editor.selection)) {
-              Transforms.unwrapNodes(editor, {
-                match: (n) => Element.isElement(n) && n.type === "selection",
-                at: [],
-                split: false,
-              });
-              Transforms.wrapNodes(editor, selectionNode, {
-                split: true,
-              });
-              console.log("here", onUpdateVersion);
-              const selectedText = Editor.string(editor, editor.selection);
-              onUpdateVersion?.({
-                ...version,
-                selection: selectedText,
-              });
-            }
-          }}
-          className="h-full w-full border-none outline-none resize-none bg-transparent"
+          onSelect={handleSelection}
+          className="h-full w-full p-4 border-none outline-none resize-none bg-transparent"
         />
       </Slate>
     </div>
@@ -104,4 +143,28 @@ const withInlines = (editor: Editor) => {
     element.type === "selection" || isInline(element);
 
   return editor;
+};
+
+const SelectButton = ({
+  active,
+  onToggleSelectionActive,
+}: {
+  active?: boolean;
+  onToggleSelectionActive: () => void;
+}) => {
+  return (
+    <button
+      className={clsx([
+        "text-lg font-bold w-8 h-8 rounded-md cursor-pointer",
+        active ? "text-gray-300 bg-gray-900" : "bg-gray-300 text-gray-900",
+      ])}
+      onPointerDown={(e) => e.preventDefault()}
+      onClick={(e) => {
+        e.preventDefault();
+        onToggleSelectionActive();
+      }}
+    >
+      S
+    </button>
+  );
 };

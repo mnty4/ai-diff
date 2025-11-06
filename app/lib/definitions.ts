@@ -11,6 +11,7 @@ export type Version = {
   text: string;
   status: "ready" | "loading" | "error";
   selection?: string;
+  selectionActive?: boolean;
   errorMsg?: string;
 };
 export type PromptDTO = {
@@ -35,7 +36,11 @@ export type PromptDataAction =
   | { type: "updatePrompt"; payload: string }
   | { type: "setVersions"; payload: Version[] }
   | { type: "addVersion"; payload: Version }
-  | { type: "updateVersion"; payload: Version }
+  | {
+      type: "updateVersion";
+      id: string;
+      payload: Version | ((prev: Version) => Version);
+    }
   | { type: "removeVersion"; id: string }
   | { type: "updateTweak"; payload: string }
   | { type: "branch"; index: number; payload: Version }
@@ -53,11 +58,20 @@ export function promptDataReducer(
     case "setVersions":
       return { ...state, versions: action.payload, isDirty: true };
     case "updateVersion":
+      const version = state.versions.find(
+        (version) => version.id === action.id,
+      );
+      if (!version) {
+        throw new Error("Unknown version " + action.id);
+      }
+      if (typeof action.payload === "function") {
+        action.payload = action.payload(version);
+      }
       return {
         ...state,
         isDirty: true,
         versions: state.versions.map((t) =>
-          t.id === action.payload.id ? { ...t, ...action.payload } : t,
+          t.id === action.id ? { ...t, ...action.payload } : t,
         ),
       };
     case "addVersion":
