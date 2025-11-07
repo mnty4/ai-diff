@@ -10,6 +10,16 @@ import { AnimatePresence } from "motion/react";
 import * as motion from "motion/react-client";
 import { formatTweakPrompt, formatTweakSelection } from "@/app/lib/utils";
 import { useDebouncedCallback } from "use-debounce";
+import { useAppDispatch, useAppSelector, useAppStore } from "@/app/lib/store";
+import {
+  branch,
+  markSaved,
+  setActivePrompt,
+  setTitle,
+  updatePromptString,
+  updateTweak,
+  updateVersion,
+} from "@/app/lib/slices/PromptSlice";
 
 export default function PromptForm({
   initialPrompt = {
@@ -27,7 +37,10 @@ export default function PromptForm({
   generateAction: (text: string) => Promise<string>;
   savePromptToDBAction: (prompt: Prompt) => Promise<void>;
 }) {
-  const [state, dispatch] = useReducer(promptDataReducer, initialPrompt);
+  // const [state, dispatch] = useReducer(promptDataReducer, initialPrompt);
+  const prompt = useAppSelector((state) => state.activePrompt.entity);
+  const state = prompt ?? initialPrompt;
+  const dispatch = useAppDispatch();
   const [selectedSlideIndex, setSelectedSlideIndex] = useState<number>(0);
   const isPromptSelected = selectedSlideIndex === 0;
   const [showTweakModal, setShowTweakModal] = useState(false);
@@ -46,12 +59,18 @@ export default function PromptForm({
       } finally {
         if (lastVersionId.current === versionId) {
           setIsSaving(false);
-          dispatch({ type: "markSaved" });
+          dispatch(markSaved());
         }
       }
     },
     800,
   );
+
+  useEffect(() => {
+    if (!prompt) {
+      dispatch(setActivePrompt(initialPrompt));
+    }
+  }, [dispatch]);
 
   useEffect(() => {
     if (state.isDirty) {
@@ -68,46 +87,44 @@ export default function PromptForm({
       text: "",
       status: "loading",
     };
-    dispatch({
-      type: "branch",
-      index: 0,
-      payload: dummyTweak,
-    });
+    dispatch(branch({ index: 0, version: dummyTweak }));
     setBranchKey(crypto.randomUUID());
     if (!state.prompt) {
-      dispatch({
-        type: "updateVersion",
-        id: dummyTweak.id,
-        payload: {
-          ...dummyTweak,
-          status: "error",
-          errorMsg: "Prompt must be provided.",
-        },
-      });
+      dispatch(
+        updateVersion({
+          id: dummyTweak.id,
+          updates: {
+            ...dummyTweak,
+            status: "error",
+            errorMsg: "Prompt must be provided.",
+          },
+        }),
+      );
       return;
     }
     try {
       const res = await generateAction(state.prompt);
-      dispatch({
-        type: "updateVersion",
-        id: dummyTweak.id,
-        payload: {
-          ...dummyTweak,
-          text: res,
-          status: "ready",
-        },
-      });
+      dispatch(
+        updateVersion({
+          id: dummyTweak.id,
+          updates: {
+            ...dummyTweak,
+            status: "ready",
+          },
+        }),
+      );
     } catch (e) {
-      dispatch({
-        type: "updateVersion",
-        id: dummyTweak.id,
-        payload: {
-          ...dummyTweak,
-          status: "error",
-        },
-      });
+      dispatch(
+        updateVersion({
+          id: dummyTweak.id,
+          updates: {
+            ...dummyTweak,
+            status: "error",
+          },
+        }),
+      );
     }
-  }, [generateAction, state.prompt]);
+  }, [dispatch, generateAction, state.prompt]);
 
   useEffect(() => {
     const handleGlobalKeyDown = async (e: KeyboardEvent) => {
@@ -134,25 +151,27 @@ export default function PromptForm({
         text: "",
         status: "loading",
       };
-      dispatch({
-        type: "branch",
-        index: index,
-        payload: dummyTweak,
-      });
+      dispatch(
+        branch({
+          index,
+          version: dummyTweak,
+        }),
+      );
       setBranchKey(crypto.randomUUID());
       const version = state.versions[index - 1];
       const tweak = state.tweak || "";
       const prompt = state.prompt;
       if (!version || !prompt || !tweak) {
-        dispatch({
-          type: "updateVersion",
-          id: dummyTweak.id,
-          payload: {
-            ...dummyTweak,
-            status: "error",
-            errorMsg: "Prompt must be provided.",
-          },
-        });
+        dispatch(
+          updateVersion({
+            id: dummyTweak.id,
+            updates: {
+              ...dummyTweak,
+              status: "error",
+              errorMsg: "Prompt must be provided.",
+            },
+          }),
+        );
         return;
       }
       let formatted: string;
@@ -169,27 +188,30 @@ export default function PromptForm({
 
       try {
         const res = await generateAction(formatted);
-        dispatch({
-          type: "updateVersion",
-          id: dummyTweak.id,
-          payload: {
-            ...dummyTweak,
-            text: res,
-            status: "ready",
-          },
-        });
+        dispatch(
+          updateVersion({
+            id: dummyTweak.id,
+            updates: {
+              ...dummyTweak,
+              text: res,
+              status: "ready",
+            },
+          }),
+        );
       } catch (e) {
-        dispatch({
-          type: "updateVersion",
-          id: dummyTweak.id,
-          payload: {
-            ...dummyTweak,
-            status: "error",
-          },
-        });
+        dispatch(
+          updateVersion({
+            id: dummyTweak.id,
+            updates: {
+              ...dummyTweak,
+              status: "error",
+            },
+          }),
+        );
       }
     },
     [
+      dispatch,
       generateAction,
       selectedSlideIndex,
       state.prompt,
@@ -213,16 +235,11 @@ export default function PromptForm({
     <form className={"flex flex-col justify-center items-center gap-4"}>
       <TitleField
         title={state.title}
-        setTitle={(title) => dispatch({ type: "setTitle", payload: title })}
+        setTitle={(title) => dispatch(setTitle(title))}
       />
       <PromptCarousel
         prompt={state}
-        onUpdateVersion={(id, value) =>
-          dispatch({ type: "updateVersion", id, payload: value })
-        }
-        onUpdatePrompt={(value) =>
-          dispatch({ type: "updatePrompt", payload: value })
-        }
+        onUpdatePrompt={(value) => dispatch(updatePromptString(value))}
         onSelectSlide={(index) => setSelectedSlideIndex(index)}
         branchKey={branchKey}
         onRetry={(index) => handleRetry(index)}
@@ -261,9 +278,7 @@ export default function PromptForm({
             >
               <TweakWrapper
                 tweak={state.tweak || ""}
-                onChange={(e) =>
-                  dispatch({ type: "updateTweak", payload: e.target.value })
-                }
+                onChange={(e) => dispatch(updateTweak(e.target.value))}
                 handleSubmit={() => handleTweak()}
                 setShowTweakModal={setShowTweakModal}
                 showTweakModal={showTweakModal}

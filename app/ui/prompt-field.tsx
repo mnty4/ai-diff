@@ -1,24 +1,25 @@
-import Image from "next/image";
-import editSvg from "@/public/edit-pencil.svg";
-import { Prompt } from "@/app/lib/definitions";
-import HighlightableText, { TextSelection } from "@/app/ui/highlightable-text";
-import { useState } from "react";
+import { useCallback } from "react";
+import { useAppDispatch, useAppSelector } from "@/app/lib/store";
+import { updatePromptString } from "@/app/lib/slices/PromptSlice";
 
 export default function PromptField({
-  prompt,
-  onUpdatePrompt,
+  initialPrompt,
 }: {
-  prompt: string;
-  onUpdatePrompt?: (value: string) => void;
+  initialPrompt: string;
 }) {
-  const [selection, setSelection] = useState<TextSelection | null>(null);
+  const promptState = useAppSelector(
+    (state) => state.activePrompt.entity?.prompt,
+  );
+  const dispatch = useAppDispatch();
+  const prompt = promptState ?? initialPrompt;
+  const onUpdatePrompt = useCallback(
+    (promptString: string) => {
+      dispatch(updatePromptString(promptString));
+    },
+    [dispatch],
+  );
   return (
     <div className={"bg-gray-900 rounded-xl p-4 w-full h-full"}>
-      {/*<HighlightableText*/}
-      {/*  text={prompt || ""}*/}
-      {/*  selection={selection}*/}
-      {/*  setSelection={setSelection}*/}
-      {/*/>*/}
       <textarea
         data-testid="prompt-textarea"
         className={

@@ -21,18 +21,11 @@ import VersionEditor from "@/app/ui/version-editor";
 
 export default function PromptCarousel({
   prompt,
-  onUpdatePrompt,
-  onUpdateVersion,
   onSelectSlide,
   branchKey,
   onRetry,
 }: {
   prompt: Prompt;
-  onUpdatePrompt?: (prompt: string) => void;
-  onUpdateVersion?: (
-    id: string,
-    payload: Version | ((prev: Version) => Version),
-  ) => void;
   onSelectSlide?: (index: number) => void;
   branchKey?: string;
   onRetry?: (index: number) => void;
@@ -102,10 +95,7 @@ export default function PromptCarousel({
               "embla__slide h-[60vh] flex-[0_0_100%] md:flex-[0_0_50%] pr-4",
             ])}
           >
-            <PromptField
-              prompt={prompt.prompt}
-              onUpdatePrompt={onUpdatePrompt}
-            />
+            <PromptField initialPrompt={prompt.prompt} />
           </div>
           {prompt.versions.map((version, index) => (
             <div
@@ -122,11 +112,7 @@ export default function PromptCarousel({
                 />
               )}
               {version.status === "ready" && (
-                // <TweakField version={version} onUpdateTweak={onUpdateVersion} />
-                <VersionEditor
-                  version={version}
-                  onUpdateVersion={onUpdateVersion}
-                />
+                <VersionEditor initialVersion={version} />
               )}
             </div>
           ))}

@@ -7,6 +7,8 @@ import { ReactEditor } from "slate-react";
 import { Version } from "@/app/lib/definitions";
 import Toolbar from "@/app/ui/Toolbar";
 import clsx from "clsx";
+import { useAppDispatch, useAppSelector } from "@/app/lib/store";
+import { updateVersion } from "@/app/lib/slices/PromptSlice";
 
 type ParagraphElement = { type: "paragraph"; children: CustomText[] };
 type SelectionElement = { type: "selection"; children: CustomText[] };
@@ -21,23 +23,33 @@ declare module "slate" {
 }
 
 export default function VersionEditor({
-  version,
-  onUpdateVersion,
+  initialVersion,
 }: {
-  version: Version;
-  onUpdateVersion?: (
-    id: string,
-    payload: Version | ((prev: Version) => Version),
-  ) => void;
+  initialVersion: Version;
 }) {
+  const versionState = useAppSelector((state) =>
+    state.activePrompt.entity?.versions.find((v) => v.id === initialVersion.id),
+  );
+
+  const version = versionState ?? initialVersion;
+  const dispatch = useAppDispatch();
+
+  const [editor] = useState(
+    () => withInlines(withReact(createEditor())) as Editor,
+  );
+
   const initialValue: ParagraphElement[] = [
     {
       type: "paragraph",
       children: [{ text: version.text }],
     },
   ];
-  const [editor] = useState(
-    () => withInlines(withReact(createEditor())) as Editor,
+
+  const onUpdateVersion = useCallback(
+    (value: Partial<Version>) => {
+      dispatch(updateVersion({ id: version.id, updates: value }));
+    },
+    [dispatch, version.id],
   );
 
   const renderElement = useCallback(
@@ -85,40 +97,39 @@ export default function VersionEditor({
     }
     const selectedText = selectText();
     if (selectedText) {
-      onUpdateVersion?.(version.id, {
-        ...version,
+      onUpdateVersion?.({
         selection: selectedText,
       });
     }
   }, [onUpdateVersion, selectText, version]);
 
   const toggleSelectionActive = useCallback(() => {
-    onUpdateVersion?.(version.id, (prev) => {
-      if (prev.selectionActive) {
-        Transforms.unwrapNodes(editor, {
-          match: (n) => Element.isElement(n) && n.type === "selection",
-          at: [],
-          split: false,
-        });
-        return { ...prev, selectionActive: false };
-      } else {
-        const selectedText = selectText();
-        return { ...prev, selection: selectedText, selectionActive: true };
-      }
-    });
-  }, [editor, onUpdateVersion, selectText, version.id]);
+    if (version.selectionActive) {
+      Transforms.unwrapNodes(editor, {
+        match: (n) => Element.isElement(n) && n.type === "selection",
+        at: [],
+        split: false,
+      });
+      onUpdateVersion?.({ selectionActive: false });
+    } else {
+      const selectedText = selectText();
+      onUpdateVersion?.({
+        selection: selectedText,
+        selectionActive: true,
+      });
+    }
+  }, [editor, onUpdateVersion, selectText, version]);
 
   return (
     <div className="bg-gray-900 rounded-xl w-full h-full">
       <Slate
         editor={editor}
         initialValue={initialValue}
-        onValueChange={(nodes) => {
-          onUpdateVersion?.(version.id, (prev) => ({
-            ...prev,
+        onValueChange={(nodes) =>
+          onUpdateVersion?.({
             text: nodes.map((node) => Node.string(node)).join("\n"),
-          }));
-        }}
+          })
+        }
       >
         <Toolbar>
           <SelectButton
