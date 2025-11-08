@@ -6,9 +6,9 @@ import { BaseEditor } from "slate";
 import { ReactEditor } from "slate-react";
 import { Version } from "@/app/lib/definitions";
 import Toolbar from "@/app/ui/Toolbar";
-import clsx from "clsx";
 import { useAppDispatch, useAppSelector } from "@/app/lib/store";
 import { updateVersion } from "@/app/lib/slices/PromptSlice";
+import SelectButton from "@/app/ui/editor/select-button";
 
 type ParagraphElement = { type: "paragraph"; children: CustomText[] };
 type SelectionElement = { type: "selection"; children: CustomText[] };
@@ -121,7 +121,7 @@ export default function VersionEditor({
   }, [editor, onUpdateVersion, selectText, version]);
 
   return (
-    <div className="bg-gray-900 rounded-xl w-full h-full">
+    <div className="bg-gray-900 rounded-xl w-full h-full p-2">
       <Slate
         editor={editor}
         initialValue={initialValue}
@@ -141,7 +141,7 @@ export default function VersionEditor({
           data-testid="version-editor"
           renderElement={renderElement}
           onSelect={handleSelection}
-          className="h-full w-full p-4 border-none outline-none resize-none bg-transparent"
+          className="h-full w-full p-2 border-none outline-none resize-none bg-transparent"
         />
       </Slate>
     </div>
@@ -155,28 +155,4 @@ const withInlines = (editor: Editor) => {
     element.type === "selection" || isInline(element);
 
   return editor;
-};
-
-const SelectButton = ({
-  active,
-  onToggleSelectionActive,
-}: {
-  active?: boolean;
-  onToggleSelectionActive: () => void;
-}) => {
-  return (
-    <button
-      className={clsx([
-        "text-lg font-bold w-8 h-8 rounded-md cursor-pointer",
-        active ? "text-gray-300 bg-gray-900" : "bg-gray-300 text-gray-900",
-      ])}
-      onPointerDown={(e) => e.preventDefault()}
-      onClick={(e) => {
-        e.preventDefault();
-        onToggleSelectionActive();
-      }}
-    >
-      S
-    </button>
-  );
 };
