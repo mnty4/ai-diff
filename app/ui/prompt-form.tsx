@@ -67,10 +67,10 @@ export default function PromptForm({
   );
 
   useEffect(() => {
-    if (!prompt) {
+    if (!prompt || initialPrompt.id !== prompt.id) {
       dispatch(setActivePrompt(initialPrompt));
     }
-  }, [dispatch]);
+  }, [dispatch, initialPrompt, prompt]);
 
   useEffect(() => {
     if (state.isDirty) {
@@ -239,7 +239,6 @@ export default function PromptForm({
       />
       <PromptCarousel
         prompt={state}
-        onUpdatePrompt={(value) => dispatch(updatePromptString(value))}
         onSelectSlide={(index) => setSelectedSlideIndex(index)}
         branchKey={branchKey}
         onRetry={(index) => handleRetry(index)}
